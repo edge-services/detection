@@ -8,14 +8,14 @@
 # --mount type=bind,source=/opt/vc,target=/opt/vc:rw  \
 # sinny777/detection_arm64:latest 
 
-DISPLAY=:0 docker run --rm -it --name detection  \
---privileged \
---device /dev/video0 \
---device /dev/mem   \
---device /dev/vchiq \
--v /opt/vc:/opt/vc  \
--v /tmp/.X11-unix:/tmp/.X11-unix \
-sinny777/detection_arm64:latest
+# DISPLAY=:0 docker run --rm -it --name detection  \
+# --privileged \
+# --device /dev/video0 \
+# --device /dev/mem   \
+# --device /dev/vchiq \
+# -v /opt/vc:/opt/vc  \
+# -v /tmp/.X11-unix:/tmp/.X11-unix \
+# sinny777/detection_arm64:latest
 
 
 
