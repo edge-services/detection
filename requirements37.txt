@@ -1,0 +1,17 @@
+absl-py
+certifi
+charset-normalizer
+flatbuffers
+idna==3.3
+numpy
+opencv-python
+pandas>=0.15.0
+Pillow
+pybind11
+python-dateutil
+pytz
+requests
+six
+tflite-runtime
+tflite-support
+urllib3

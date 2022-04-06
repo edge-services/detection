@@ -75,7 +75,7 @@ WORKDIR /usr/src/app
 ADD . .
 
 RUN chmod 755 /usr/src/app/setup.sh && \
-    bash /usr/src/app/setup.sh
+    bash /usr/src/app/setup.sh -m model -a ${ARCH}
 
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 ENV LD_LIBRARY_PATH=/opt/vc/lib
