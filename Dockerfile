@@ -85,7 +85,7 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
     && ldconfig
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 # RUN ldconfig
-RUN usermod -aG video $USER
+# RUN usermod -aG video $USER
 
 # ENV HOST=0.0.0.0 PORT=3000
 
