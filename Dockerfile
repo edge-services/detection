@@ -26,6 +26,7 @@ USER root
 # Updates and adds system required packages
 RUN apt-get update && \
     apt-get -qy install curl ca-certificates nano make \
+    ffmpeg libsm6 libxext6 \
     build-essential wget fswebcam \
     cmake \
     gcc \
