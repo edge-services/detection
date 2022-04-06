@@ -14,7 +14,7 @@ else
   DATA_DIR="$model"
 fi
 
-mkdir -p $DATA_DIR
+mkdir -p model
 
 if [ $arch = 'arm32v7' ]; then
   requirement="requirements37.txt"
@@ -26,13 +26,13 @@ echo $requirement
 
 # Install Python dependencies.
 # python -m pip install pip --upgrade
-python -m pip install --no-cache-dir -r $requirement \
-    && find /usr/local \
-       \( -type d -a -name test -o -name tests \) \
-       -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-       -exec rm -rf '{}' + \
-    && cd / \
-    && rm -rf /usr/src/python ~/.cache
+python -m pip install --no-cache-dir -r $requirement 
+    # && find /usr/local \
+    #    \( -type d -a -name test -o -name tests \) \
+    #    -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+    #    -exec rm -rf '{}' + \
+    # && cd / \
+    # && rm -rf /usr/src/python ~/.cache
 
 # Download TF Lite model with metadata.
 FILE=${DATA_DIR}/model.tflite
