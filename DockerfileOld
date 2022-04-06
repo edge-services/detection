@@ -22,8 +22,6 @@
 ARG ARCH=arm32v7
 ARG PYTHON_VERSION=3.7.13
 ARG OS=slim-buster
-ARG DEBIAN_FRONTEND=noninteractive
-ARG DEBCONF_NOWARNINGS="yes"
 
 FROM ${ARCH}/python:${PYTHON_VERSION}-${OS}
 
@@ -40,7 +38,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.arch=${ARCH} \
     authors="Gurvinder Singh <sinny777@gmail.com>"
 
-# USER root
+USER root
 
 # Updates and adds system required packages
 # RUN apt-get update && \
@@ -76,12 +74,6 @@ RUN apt-get update && \
 # RUN apt-get update && install ffmpeg libsm6 libxext6  -y
 
 WORKDIR /usr/src/app
-
-RUN addgroup --gid 1001 --system app && \
-    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
-
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
 
 ADD . .
 

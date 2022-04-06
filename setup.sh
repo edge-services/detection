@@ -16,10 +16,10 @@ else
   DATA_DIR="$model"
 fi
 
-mkdir -p model
+mkdir -p $DATA_DIR
 
 if [ $arch = 'arm32v7' ]; then
-  requirement="requirements37.txt"
+  requirement="requirements.txt"
 else
   requirement="requirements.txt"
 fi
