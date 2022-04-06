@@ -63,7 +63,7 @@ RUN apt-get update && \
     # libatlas-base-dev gfortran \
     # others
     # libtbb2 libtbb-dev \
-    ffmpeg libsm6 libxext6 \
+    ffmpeg libsm6 libxext6 fswebcam \
     # cleanup
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
