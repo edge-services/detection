@@ -16,6 +16,7 @@
 
 """Main script to run image classification."""
 
+import os
 import argparse
 from nis import cat
 import sys
@@ -33,7 +34,7 @@ _LEFT_MARGIN = 24  # pixels
 _TEXT_COLOR = (0, 0, 255)  # red
 _FONT_SIZE = 1
 _FONT_THICKNESS = 1
-_FPS_AVERAGE_FRAME_COUNT = 10
+_FPS_AVERAGE_FRAME_COUNT = 5
 
 
 def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
@@ -80,29 +81,36 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
     # image = cv2.imread(test_image)
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     categories = classifier.classify(img)
-    print(categories)
+    # print(categories)
 
-    if categories[0].label == 'Fire' && categories[0].score > 0.5:
+    if categories[0].label == 'Fire' and categories[0].score > 0.5 :
         detection_count += 1
-    # for idx, category in enumerate(categories):
-    #   class_name = category.label
-    #   score = round(category.score, 2)
-    #   result_text = class_name + ' (' + str(score) + ')'
-    #   text_location = (_LEFT_MARGIN, (idx + 2) * _ROW_SIZE)
-    #   cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-    #               _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
+        print(categories[0])
+    for idx, category in enumerate(categories):
+      class_name = category.label
+      score = round(category.score, 2)
+      result_text = class_name + ' (' + str(score) + ')'
+      text_location = (_LEFT_MARGIN, (idx + 2) * _ROW_SIZE)
+      cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+                  _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
     # Calculate the FPS
     if counter % _FPS_AVERAGE_FRAME_COUNT == 0:
       end_time = time.time()
       fps = _FPS_AVERAGE_FRAME_COUNT / (end_time - start_time)
+      if detection_count > 10:
+          print('Fire Detectected count: >> ', detection_count)
+          detection_count = 0
+        #   timestr = time.strftime("%Y%m%d-%H%M%S")
+        #   frame = 'frame_'+timestr+'.jpg' 
+        #   cv2.imwrite(os.path.join('./data' , frame), image)
       start_time = time.time()
 
     # # Show the FPS
-    # fps_text = 'FPS = ' + str(int(fps))
-    # text_location = (_LEFT_MARGIN, _ROW_SIZE)
-    # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-    #             _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
+    fps_text = 'FPS = ' + str(int(fps))
+    text_location = (_LEFT_MARGIN, _ROW_SIZE)
+    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+                _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:

@@ -4,8 +4,7 @@ charset-normalizer
 flatbuffers
 idna
 numpy
-opencv-contrib-python-headless
-pandas>=0.15.0
+pandas
 Pillow
 pybind11
 python-dateutil

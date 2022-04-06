@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p data
+
 while getopts m:a: flag
 do
     case "${flag}" in
@@ -35,7 +37,8 @@ pip install --no-cache-dir -r $requirement
     # && rm -rf /usr/src/python ~/.cache
 
 apt-get update
-pip install --no-cache-dir opencv-contrib-python-headless
+# pip install --no-cache-dir opencv-contrib-python-headless
+pip install --no-cache-dir opencv-python-headless
 
 # Download TF Lite model with metadata.
 FILE=${DATA_DIR}/model.tflite
