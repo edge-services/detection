@@ -53,6 +53,9 @@ RUN apt-get update && \
     apt-get -qy install --no-install-recommends \
     unzip curl \
     build-essential cmake pkg-config \
+    openssl \
+    openssh-client \
+    libssl-dev \
     # to work with images
     # libjpeg-dev libtiff-dev libjasper-dev libpng-dev \
     # to work with videos
