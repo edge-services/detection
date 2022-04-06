@@ -3,7 +3,7 @@
 
 
 ARG ARCH=arm32v7
-ARG PYTHON_VERSION=3.8.13
+ARG PYTHON_VERSION=3.7.13
 ARG OS=slim-buster
 
 FROM ${ARCH}/python:${PYTHON_VERSION}-${OS}
@@ -32,11 +32,25 @@ USER root
 #     gcc \
 #     -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get -qy install curl nano make g++ \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    unzip curl \
+    build-essential cmake pkg-config \
+    # to work with images
+    libjpeg-dev libtiff-dev libjasper-dev libpng-dev \
+    # to work with videos
+    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+    # needed by highgui tool
+    libgtk2.0-dev \
+    # for opencv math operations
+    libatlas-base-dev gfortran \
+    # others
+    libtbb2 libtbb-dev \
     ffmpeg libsm6 libxext6 \
-    gcc \
-    -y --no-install-recommends --fix-missing && rm -rf /var/lib/apt/lists/*
+    # cleanup
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get -y autoremove
+
+# RUN apt-get update && install ffmpeg libsm6 libxext6  -y
 
 WORKDIR /usr/src/app
 

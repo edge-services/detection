@@ -10,7 +10,13 @@ fi
 
 # Install Python dependencies.
 # python -m pip install pip --upgrade
-python -m pip install --no-cache-dir -r requirements.txt
+python -m pip install --no-cache-dir -r requirements.txt \
+    && find /usr/local \
+       \( -type d -a -name test -o -name tests \) \
+       -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+       -exec rm -rf '{}' + \
+    && cd / \
+    && rm -rf /usr/src/python ~/.cache
 
 # Download TF Lite model with metadata.
 FILE=${DATA_DIR}/model.tflite
