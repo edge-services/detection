@@ -3,20 +3,20 @@
 mkdir -p model
 
 if [ $# -eq 0 ]; then
-  DATA_DIR="./model"
+  DATA_DIR="model"
 else
   DATA_DIR="$1"
 fi
 
 # Install Python dependencies.
 # python -m pip install pip --upgrade
-python -m pip install --no-cache-dir -r requirements.txt \
-    && find /usr/local \
-       \( -type d -a -name test -o -name tests \) \
-       -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-       -exec rm -rf '{}' + \
-    && cd / \
-    && rm -rf /usr/src/python ~/.cache
+python -m pip install --no-cache-dir -r requirements.txt 
+    # && find /usr/local \
+    #    \( -type d -a -name test -o -name tests \) \
+    #    -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+    #    -exec rm -rf '{}' + \
+    # && cd / \
+    # && rm -rf /usr/src/python ~/.cache
 
 # Download TF Lite model with metadata.
 FILE=${DATA_DIR}/model.tflite

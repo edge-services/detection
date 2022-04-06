@@ -1,5 +1,5 @@
 ## docker build -t edge-services/detection_arm:latest .
-## docker run --rm -it --name detection sinny777/detection_arm:latest
+## docker run --rm -it --name detection --device /dev/video0 sinny777/detection_arm:latest 
 
 
 ARG ARCH=arm32v7
