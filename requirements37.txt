@@ -2,9 +2,9 @@ absl-py
 certifi
 charset-normalizer
 flatbuffers
-idna==3.3
+idna
 numpy
-opencv-python
+opencv-contrib-python-headless
 pandas>=0.15.0
 Pillow
 pybind11
