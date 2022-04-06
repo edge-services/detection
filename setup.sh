@@ -24,6 +24,7 @@ fi
 
 echo $requirement
 
+apt-get update
 # Install Python dependencies.
 # python -m pip install pip --upgrade
 pip install --no-cache-dir -r $requirement 
