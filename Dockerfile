@@ -24,13 +24,19 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
 USER root
 
 # Updates and adds system required packages
+# RUN apt-get update && \
+#     apt-get -qy install curl ca-certificates nano make g++ \
+#     ffmpeg libsm6 libxext6 \
+#     build-essential wget fswebcam \
+#     cmake \
+#     gcc \
+#     -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
-    apt-get -qy install curl ca-certificates nano make \
+    apt-get -qy install curl nano make g++ \
     ffmpeg libsm6 libxext6 \
-    build-essential wget fswebcam \
-    cmake \
     gcc \
-    -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
+    -y --no-install-recommends --fix-missing && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 

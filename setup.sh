@@ -10,7 +10,7 @@ fi
 
 # Install Python dependencies.
 # python -m pip install pip --upgrade
-python -m pip install -r requirements.txt
+python -m pip install --no-cache-dir -r requirements.txt
 
 # Download TF Lite model with metadata.
 FILE=${DATA_DIR}/model.tflite
