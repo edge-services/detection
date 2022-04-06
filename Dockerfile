@@ -49,7 +49,8 @@ USER root
 #     gcc \
 #     -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -qy --no-install-recommends \
+RUN apt-get update && \
+    apt-get -qy install --no-install-recommends \
     unzip curl \
     build-essential cmake pkg-config \
     # to work with images
