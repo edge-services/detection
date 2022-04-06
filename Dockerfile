@@ -32,19 +32,19 @@ USER root
 #     gcc \
 #     -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -qy --no-install-recommends \
     unzip curl \
     build-essential cmake pkg-config \
     # to work with images
-    libjpeg-dev libtiff-dev libjasper-dev libpng-dev \
+    # libjpeg-dev libtiff-dev libjasper-dev libpng-dev \
     # to work with videos
-    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+    # libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
     # needed by highgui tool
-    libgtk2.0-dev \
+    # libgtk2.0-dev \
     # for opencv math operations
-    libatlas-base-dev gfortran \
+    # libatlas-base-dev gfortran \
     # others
-    libtbb2 libtbb-dev \
+    # libtbb2 libtbb-dev \
     ffmpeg libsm6 libxext6 \
     # cleanup
     && rm -rf /var/lib/apt/lists/* \
