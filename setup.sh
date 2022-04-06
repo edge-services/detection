@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p model
+
 if [ $# -eq 0 ]; then
   DATA_DIR="./model"
 else
@@ -7,7 +9,7 @@ else
 fi
 
 # Install Python dependencies.
-python -m pip install pip --upgrade
+# python -m pip install pip --upgrade
 python -m pip install -r requirements.txt
 
 # Download TF Lite model with metadata.
