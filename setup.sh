@@ -26,7 +26,7 @@ echo $requirement
 
 # Install Python dependencies.
 # python -m pip install pip --upgrade
-python -m pip install --no-cache-dir -r $requirement 
+python -m pip install --no-cache-dir -r $requirement \
     && find /usr/local \
        \( -type d -a -name test -o -name tests \) \
        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
