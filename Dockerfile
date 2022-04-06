@@ -1,6 +1,23 @@
 ## docker build -t edge-services/detection_arm:latest .
 ## docker run --rm -it --name detection --device /dev/video0 sinny777/detection_arm:latest 
 
+# DISPLAY=:0 docker run --rm -it --name detection  \
+# --device /dev/video0 \
+# --device /dev/mem   \
+# --device /dev/vchiq \
+# --mount type=bind,source=/opt/vc,target=/opt/vc:rw  \
+# sinny777/detection_arm64:latest 
+
+DISPLAY=:0 docker run --rm -it --name detection  \
+--privileged \
+--device /dev/video0 \
+--device /dev/mem   \
+--device /dev/vchiq \
+-v /opt/vc:/opt/vc  \
+-v /tmp/.X11-unix:/tmp/.X11-unix \
+sinny777/detection_arm64:latest
+
+
 
 ARG ARCH=arm32v7
 ARG PYTHON_VERSION=3.7.13
@@ -45,7 +62,7 @@ RUN apt-get update && apt-get install -qy --no-install-recommends \
     # libatlas-base-dev gfortran \
     # others
     # libtbb2 libtbb-dev \
-    ffmpeg libsm6 libxext6 \
+    ffmpeg libsm6 libxext6 picamera \
     # cleanup
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
@@ -59,6 +76,7 @@ ADD . .
 RUN chmod 755 /usr/src/app/setup.sh && \
     bash /usr/src/app/setup.sh
 
+# ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 ENV LD_LIBRARY_PATH=/opt/vc/lib
 ENV PATH="$PATH:/opt/vc/bin"
 ENV TZ Asia/Kolkata
@@ -66,6 +84,7 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
     && ldconfig
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 # RUN ldconfig
+RUN usermod -aG video $USER
 
 # ENV HOST=0.0.0.0 PORT=3000
 

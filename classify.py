@@ -79,31 +79,31 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
     # image = cv2.imread(test_image)
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     categories = classifier.classify(img)
-    
-    for idx, category in enumerate(categories):
-      class_name = category.label
-      score = round(category.score, 2)
-      result_text = class_name + ' (' + str(score) + ')'
-      text_location = (_LEFT_MARGIN, (idx + 2) * _ROW_SIZE)
-      cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                  _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
+    print(categories)
+    # for idx, category in enumerate(categories):
+    #   class_name = category.label
+    #   score = round(category.score, 2)
+    #   result_text = class_name + ' (' + str(score) + ')'
+    #   text_location = (_LEFT_MARGIN, (idx + 2) * _ROW_SIZE)
+    #   cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+    #               _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
-    # Calculate the FPS
-    if counter % _FPS_AVERAGE_FRAME_COUNT == 0:
-      end_time = time.time()
-      fps = _FPS_AVERAGE_FRAME_COUNT / (end_time - start_time)
-      start_time = time.time()
+    # # Calculate the FPS
+    # if counter % _FPS_AVERAGE_FRAME_COUNT == 0:
+    #   end_time = time.time()
+    #   fps = _FPS_AVERAGE_FRAME_COUNT / (end_time - start_time)
+    #   start_time = time.time()
 
-    # Show the FPS
-    fps_text = 'FPS = ' + str(int(fps))
-    text_location = (_LEFT_MARGIN, _ROW_SIZE)
-    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
+    # # Show the FPS
+    # fps_text = 'FPS = ' + str(int(fps))
+    # text_location = (_LEFT_MARGIN, _ROW_SIZE)
+    # cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+    #             _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:
       break
-    cv2.imshow('image_classification', image)
+    # cv2.imshow('image_classification', image)
 
   cap.release()
   cv2.destroyAllWindows()
