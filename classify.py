@@ -17,6 +17,7 @@
 """Main script to run image classification."""
 
 import argparse
+from nis import cat
 import sys
 import time
 
@@ -57,7 +58,7 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
   classifier = ImageClassifier(model, options)
 
   # Variables to calculate FPS
-  counter, fps = 0, 0
+  counter, fps, detection_count = 0, 0, 0
   start_time = time.time()
 
   # Start capturing video input from the camera
@@ -80,6 +81,9 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     categories = classifier.classify(img)
     print(categories)
+
+    if categories[0].label == 'Fire' && categories[0].score > 0.5:
+        detection_count += 1
     # for idx, category in enumerate(categories):
     #   class_name = category.label
     #   score = round(category.score, 2)
@@ -88,11 +92,11 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
     #   cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
     #               _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
-    # # Calculate the FPS
-    # if counter % _FPS_AVERAGE_FRAME_COUNT == 0:
-    #   end_time = time.time()
-    #   fps = _FPS_AVERAGE_FRAME_COUNT / (end_time - start_time)
-    #   start_time = time.time()
+    # Calculate the FPS
+    if counter % _FPS_AVERAGE_FRAME_COUNT == 0:
+      end_time = time.time()
+      fps = _FPS_AVERAGE_FRAME_COUNT / (end_time - start_time)
+      start_time = time.time()
 
     # # Show the FPS
     # fps_text = 'FPS = ' + str(int(fps))

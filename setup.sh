@@ -24,7 +24,6 @@ fi
 
 echo $requirement
 
-apt-get update
 # Install Python dependencies.
 # python -m pip install pip --upgrade
 pip install --no-cache-dir -r $requirement 
@@ -34,6 +33,9 @@ pip install --no-cache-dir -r $requirement
     #    -exec rm -rf '{}' + \
     # && cd / \
     # && rm -rf /usr/src/python ~/.cache
+
+apt-get update
+pip install --no-cache-dir opencv-contrib-python-headless
 
 # Download TF Lite model with metadata.
 FILE=${DATA_DIR}/model.tflite
