@@ -68,13 +68,13 @@ RUN apt update && \
 
 WORKDIR /app
 
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
 RUN addgroup --gid 1001 --system app && \
     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
 
 USER app
-
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
 
@@ -85,8 +85,6 @@ ADD . .
 
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -m model -a ${ARCH}
-
-
 
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 ENV LD_LIBRARY_PATH=/opt/vc/lib
