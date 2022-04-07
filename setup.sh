@@ -18,22 +18,22 @@ fi
 
 mkdir -p $DATA_DIR
 
-apt-get update
+# apt-get update
 
-if [ $arch = 'arm32v7' ]; then
-  requirement="requirements.txt"
-  # pip install --no-cache-dir absl-py certifi charset-normalizer flatbuffers idna numpy pandas Pillow pybind11 python-dateutil pytz requests six \
-  # tflite-runtime tflite-support urllib3 opencv-python-headless
-else
-  requirement="requirements.txt"
-  # pip install --no-cache-dir -r requirements.txt 
-fi
+# if [ $arch = 'arm32v7' ]; then
+#   requirement="requirements.txt"
+#   # pip install --no-cache-dir absl-py certifi charset-normalizer flatbuffers idna numpy pandas Pillow pybind11 python-dateutil pytz requests six \
+#   # tflite-runtime tflite-support urllib3 opencv-python-headless
+# else
+#   requirement="requirements.txt"
+#   # pip install --no-cache-dir -r requirements.txt 
+# fi
 
 # echo $requirement
 
 # Install Python dependencies.
-python -m pip install pip --upgrade
-pip install --no-cache-dir -r $requirement 
+# python -m pip install pip --upgrade
+# pip install --no-cache-dir -r $requirement 
     # && find /usr/local \
     #    \( -type d -a -name test -o -name tests \) \
     #    -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \

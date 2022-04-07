@@ -51,9 +51,9 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
 #     gcc \
 #     -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get -qy install --no-install-recommends \
-    unzip curl \
+RUN apt update && \
+    apt -qy install --no-install-recommends \
+    unzip curl nano \
     build-essential cmake pkg-config \
     openssl \
     openssh-client \
@@ -84,6 +84,9 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 ADD . .
+
+RUN apt update && python -m pip install pip --upgrade && \
+    pip install --no-cache-dir -r requirements.txt
 
 RUN chmod 755 /usr/src/app/setup.sh && \
     bash /usr/src/app/setup.sh -m model -a ${ARCH}
