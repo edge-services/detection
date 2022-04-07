@@ -10,8 +10,6 @@
 # -v /tmp/.X11-unix:/tmp/.X11-unix \
 # sinny777/detection_arm:latest
 
-
-
 ARG ARCH=arm32v7
 ARG PYTHON_VERSION=3.7.13
 ARG OS=slim-buster
@@ -74,15 +72,13 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN apt update
 
 RUN addgroup --gid 1001 --system app && \
-    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
-
-USER app
+    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
+    && chgrp -R 0 /opt/venv/lib \
+    && chmod -R g=u /opt/venv/lib
 
 COPY requirements.txt .
 
-# RUN python -m pip install pip --upgrade && \
-#     pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
 
 ADD . .
 
@@ -97,10 +93,7 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
     && ldconfig
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 # RUN ldconfig
-# RUN usermod -aG video $USER
 
-# ENV HOST=0.0.0.0 PORT=3000
-
-# EXPOSE ${PORT}
+USER app
 
 CMD ["python", "classify.py"]
