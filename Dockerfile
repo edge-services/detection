@@ -68,6 +68,10 @@ WORKDIR /app
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+ENV PATH="$PATH:/opt/vc/bin"
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/opt/venv/lib
+# ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
+ENV TZ Asia/Kolkata
 
 RUN apt update
 
@@ -78,21 +82,18 @@ RUN addgroup --gid 1001 --system app && \
 
 COPY requirements.txt .
 
-RUN python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
+RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
+    && ldconfig \
+    && python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
+
+# RUN python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
 
 ADD . .
 
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -m model -a ${ARCH}
 
-# ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
-ENV LD_LIBRARY_PATH=/opt/vc/lib
-ENV PATH="$PATH:/opt/vc/bin"
-ENV TZ Asia/Kolkata
-RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
-    && ldconfig
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
-# RUN ldconfig
 
 USER app
 
