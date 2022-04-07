@@ -27,6 +27,7 @@ import cv2
 # from PIL import Image
 from image_classifier import ImageClassifier
 from image_classifier import ImageClassifierOptions
+from utils import CommonUtils
 
 # Visualization parameters
 _ROW_SIZE = 20  # pixels
@@ -58,6 +59,8 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
       enable_edgetpu=enable_edgetpu)
   classifier = ImageClassifier(model, options)
 
+  utils = CommonUtils()
+  
   # Variables to calculate FPS
   counter, fps, detection_count = 0, 0, 0
   start_time = time.time()
@@ -102,7 +105,9 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
           print('Fire Detectected count: >> ', detection_count)
           detection_count = 0
           timestr = time.strftime("%Y%m%d-%H%M%S")
-          frame = 'frame_'+timestr+'.jpg' 
+          serialNumber = utils.getserial()
+          print('serialNumber: >> ', serialNumber)
+          frame = serialNumber+'_frame_'+timestr+'.jpg' 
           cv2.imwrite(os.path.join('./data/frames/' , frame), image)
       start_time = time.time()
 

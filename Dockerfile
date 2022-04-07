@@ -10,8 +10,8 @@
 # -v /tmp:/tmp \
 # sinny777/detection_arm:latest
 
-ARG ARCH=arm32v7
-ARG PYTHON_VERSION=3.7.13
+ARG ARCH=arm64v8
+ARG PYTHON_VERSION=3.8.13
 ARG OS=slim-buster
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DEBCONF_NOWARNINGS="yes"
@@ -29,7 +29,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.vcs-type="Git" \
     org.label-schema.vcs-url="https://github.com/edge-services/detection" \
     org.label-schema.arch=${ARCH} \
-    authors="Gurvinder Singh <sinny777@gmail.com>"
+    maintainer="Gurvinder Singh <sinny777@gmail.com>"
 
 RUN apt update && \
     apt -qy install --no-install-recommends \
@@ -39,17 +39,7 @@ RUN apt update && \
     openssl \
     openssh-client \
     libssl-dev \
-    # to work with images
-    # libjpeg-dev libtiff-dev libjasper-dev libpng-dev \
-    # to work with videos
-    # libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
-    # needed by highgui tool
-    # libgtk2.0-dev \
-    # for opencv math operations
-    # libatlas-base-dev gfortran \
-    # others
-    # libtbb2 libtbb-dev \
-    ffmpeg libsm6 libxext6 fswebcam \
+    ffmpeg libsm6 libxext6 fswebcam libgconf2-dev \
     # cleanup
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
@@ -80,7 +70,7 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -m model -a ${ARCH}
 
-ADD ./app .
+COPY ./app .
 
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 
