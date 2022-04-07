@@ -2,13 +2,6 @@
 ## docker run --rm -it --name detection --device /dev/video0 sinny777/detection_arm:latest 
 
 # DISPLAY=:0 docker run --rm -it --name detection  \
-# --device /dev/video0 \
-# --device /dev/mem   \
-# --device /dev/vchiq \
-# --mount type=bind,source=/opt/vc,target=/opt/vc:rw  \
-# sinny777/detection_arm64:latest 
-
-# DISPLAY=:0 docker run --rm -it --name detection  \
 # --privileged \
 # --device /dev/video0 \
 # --device /dev/mem   \
@@ -32,11 +25,11 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.license="Apache-2.0" \
     org.label-schema.name="EdgeDetection" \
     org.label-schema.version=${BUILD_VERSION} \
-    org.label-schema.description="Edge Computing - Edge Detection Service" \
-    org.label-schema.url="https://github.com/sinny777/edge-services" \
+    org.label-schema.description="Edge Services - Detection Service" \
+    org.label-schema.url="https://github.com/edge-services/detection" \
     org.label-schema.vcs-ref=${BUILD_REF} \
     org.label-schema.vcs-type="Git" \
-    org.label-schema.vcs-url="https://github.com/sinny777/edge-services" \
+    org.label-schema.vcs-url="https://github.com/edge-services/detection" \
     org.label-schema.arch=${ARCH} \
     authors="Gurvinder Singh <sinny777@gmail.com>"
 
@@ -73,8 +66,6 @@ RUN apt update && \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
 
-# RUN apt-get update && install ffmpeg libsm6 libxext6  -y
-
 WORKDIR /usr/src/app
 
 RUN addgroup --gid 1001 --system app && \
@@ -83,13 +74,15 @@ RUN addgroup --gid 1001 --system app && \
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-ADD . .
+COPY requirements.txt .
 
 RUN apt update && python -m pip install pip --upgrade && \
     pip install --no-cache-dir -r requirements.txt
 
 RUN chmod 755 /usr/src/app/setup.sh && \
     bash /usr/src/app/setup.sh -m model -a ${ARCH}
+
+ADD . .
 
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 ENV LD_LIBRARY_PATH=/opt/vc/lib
