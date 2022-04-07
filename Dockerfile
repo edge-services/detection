@@ -15,7 +15,7 @@
 # --device /dev/vchiq \
 # -v /opt/vc:/opt/vc  \
 # -v /tmp/.X11-unix:/tmp/.X11-unix \
-# sinny777/detection_arm64:latest
+# sinny777/detection_arm:latest
 
 
 
