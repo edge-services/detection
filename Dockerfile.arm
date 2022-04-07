@@ -40,8 +40,8 @@ RUN apt-get update \
     && apt-get install --no-install-recommends build-essential make gcc g++ -y \
     && apt-get install --no-install-recommends dpkg-dev -y \ 
     && apt-get install --no-install-recommends libjpeg-dev -y \ 
-    && curl nano cmake pkg-config \
-    && openssl \
+    && apt-get install --no-install-recommends unzip curl nano cmake pkg-config \
+    openssl \
     openssh-client \
     libssl-dev \
     ffmpeg libsm6 libxext6 fswebcam libgconf2-dev \
@@ -72,7 +72,6 @@ RUN apt-get update \
 # RUN python -m venv /opt/venv
 # ENV PATH="/opt/venv/bin:$PATH"
 # ENV PATH="$PATH:/opt/vc/bin"
-
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/opt/venv/lib:/usr/lib:/lib:/usr/share:/usr/share
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 
