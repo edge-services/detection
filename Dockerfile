@@ -71,6 +71,7 @@ RUN addgroup --gid 1001 --system app && \
     && chmod -R g=u /opt/venv/lib
 
 COPY requirements.txt .
+COPY setup.sh .
 
 RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
     && ldconfig \
