@@ -87,7 +87,7 @@ RUN apt-get update
 #     && python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
 
 RUN chmod 755 /app/setup.sh && \
-    bash /app/setup.sh -m model -a ${ARCH}
+    bash /app/setup.sh -m model -a ${ARCH} -d data
 
 COPY ./app .
 

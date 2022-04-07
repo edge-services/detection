@@ -4,7 +4,7 @@ while getopts d:a: flag
 do
     case "${flag}" in
         a) arch=${OPTARG};;
-        m) data=${OPTARG};;
+        d) data=${OPTARG};;
     esac
 done
 
@@ -20,7 +20,8 @@ mkdir -p $DATA_DIR/frames
 # apt-get update
 
 if [ $arch = 'arm32v7' ]; then
-  pip install --no-cache-dir tflite-runtime==2.5.0
+  # pip install --no-cache-dir tflite-runtime==2.5.0
+  pip install https://github.com/iCorv/tflite-runtime/raw/master/tflite_runtime-2.4.0-cp37-cp37m-linux_armv7l.whl
   pip install --no-cache-dir tflite-support==0.3.1
 else
   pip install --no-cache-dir tflite-runtime==2.7.0
