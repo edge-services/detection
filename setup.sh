@@ -22,10 +22,10 @@ mkdir -p $DATA_DIR
 
 if [ $arch = 'arm32v7' ]; then
   pip install --no-cache-dir --user tflite-runtime==2.5.0
-  pip install --no-cache-dir --user tflite-support==0.3.1
+  pip install --no-cache-dir --user  tflite-support==0.3.1
 else
-  pip install --no-cache-dir --user tflite-runtime==2.7.0
-  pip install --no-cache-dir --user tflite-support==0.3.1  
+  pip install --no-cache-dir --user  tflite-runtime==2.7.0
+  pip install --no-cache-dir --user  tflite-support==0.3.1  
 fi
 
 # echo $requirement

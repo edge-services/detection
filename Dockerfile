@@ -68,8 +68,8 @@ RUN apt update && \
 
 WORKDIR /app
 
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# RUN python -m venv /opt/venv
+# ENV PATH="/opt/venv/bin:$PATH"
 
 RUN apt update
 
