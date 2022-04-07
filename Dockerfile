@@ -1,5 +1,5 @@
+
 ## docker build -t edge-services/detection_arm:latest .
-## docker run --rm -it --name detection --device /dev/video0 sinny777/detection_arm:latest 
 
 # DISPLAY=:0 docker run --rm -it --name detection  \
 # --privileged \
@@ -66,10 +66,12 @@ RUN apt update && \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 RUN addgroup --gid 1001 --system app && \
     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
+
+USER app
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -79,8 +81,8 @@ COPY requirements.txt .
 RUN apt update && python -m pip install pip --upgrade && \
     pip install --no-cache-dir -r requirements.txt
 
-RUN chmod 755 /usr/src/app/setup.sh && \
-    bash /usr/src/app/setup.sh -m model -a ${ARCH}
+RUN chmod 755 /app/setup.sh && \
+    bash /app/setup.sh -m model -a ${ARCH}
 
 ADD . .
 
