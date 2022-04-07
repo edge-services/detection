@@ -1,4 +1,5 @@
 
+import json
 
 class CommonUtils(object):
 
@@ -17,4 +18,7 @@ class CommonUtils(object):
             cpuserial = "ERROR000000000"
         
         return cpuserial
+
+    def getRules(self):
+
 
