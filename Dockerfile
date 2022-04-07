@@ -71,6 +71,8 @@ WORKDIR /app
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+RUN apt update
+
 RUN addgroup --gid 1001 --system app && \
     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
 
@@ -78,8 +80,9 @@ USER app
 
 COPY requirements.txt .
 
-RUN apt update && python -m pip install pip --upgrade && \
-    pip install --no-cache-dir -r requirements.txt
+# RUN python -m pip install pip --upgrade && \
+#     pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 ADD . .
 
