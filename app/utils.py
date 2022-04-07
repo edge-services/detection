@@ -15,10 +15,10 @@ class CommonUtils(object):
                     cpuserial = line[10:26]
                 f.close()
         except:
-            cpuserial = "ERROR000000000"
+            cpuserial = "darwin"
         
         return cpuserial
 
-    def getRules(self):
+    # def getRules(self):
 
 

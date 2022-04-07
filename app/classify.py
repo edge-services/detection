@@ -86,7 +86,7 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
     categories = classifier.classify(img)
     # print(categories)
 
-    if categories[0].label == 'Fire' and categories[0].score > 0.5 :
+    if len(categories) and categories[0].label == 'Fire' and categories[0].score > 0.5 :
         detection_count += 1
         print(categories[0])
     for idx, category in enumerate(categories):

@@ -174,8 +174,8 @@ class ImageClassifier(object):
     self._set_input_tensor(image)
     # self._interpreter.set_tensor(self._input_details[0]['index'], image)
     self._interpreter.invoke()
-    output_tensor = np.squeeze(
-        self._interpreter.get_tensor(self._output_details[0]['index']))
+    output_tensor = self._interpreter.get_tensor(self._output_details[0]['index'])
+    output_tensor = np.squeeze(output_tensor)
     # print(output_tensor)
     return self._postprocess(output_tensor)
 
