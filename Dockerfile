@@ -7,7 +7,7 @@
 # --device /dev/mem   \
 # --device /dev/vchiq \
 # -v /opt/vc:/opt/vc  \
-# -v /tmp/.X11-unix:/tmp/.X11-unix \
+# -v /tmp:/tmp \
 # sinny777/detection_arm:latest
 
 ARG ARCH=arm32v7
@@ -31,21 +31,11 @@ LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.arch=${ARCH} \
     authors="Gurvinder Singh <sinny777@gmail.com>"
 
-# USER root
-
-# Updates and adds system required packages
-# RUN apt-get update && \
-#     apt-get -qy install curl ca-certificates nano make g++ \
-#     ffmpeg libsm6 libxext6 \
-#     build-essential wget fswebcam \
-#     cmake \
-#     gcc \
-#     -y --no-install-recommends --fix-missing apt-utils netcat && rm -rf /var/lib/apt/lists/*
-
 RUN apt update && \
     apt -qy install --no-install-recommends \
-    unzip curl nano \
+    unzip curl nano make \
     build-essential cmake pkg-config \
+    gcc \
     openssl \
     openssh-client \
     libssl-dev \
@@ -86,12 +76,10 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
     && ldconfig \
     && python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
 
-# RUN python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
-
-ADD . .
-
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -m model -a ${ARCH}
+
+ADD ./app .
 
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 

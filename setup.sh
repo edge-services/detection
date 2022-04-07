@@ -1,22 +1,21 @@
 #!/bin/bash
 
-mkdir -p data
-
-while getopts m:a: flag
+while getopts d:a: flag
 do
     case "${flag}" in
         a) arch=${OPTARG};;
-        m) model=${OPTARG};;
+        m) data=${OPTARG};;
     esac
 done
 
-if [ -z $model ]; then
-  DATA_DIR="model"
+if [ -z $data ]; then
+  DATA_DIR="data"
 else
-  DATA_DIR="$model"
+  DATA_DIR="$data"
 fi
 
-mkdir -p $DATA_DIR
+mkdir -p $DATA_DIR/model
+mkdir -p $DATA_DIR/frames
 
 # apt-get update
 

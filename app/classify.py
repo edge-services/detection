@@ -101,9 +101,9 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
       if detection_count > 10:
           print('Fire Detectected count: >> ', detection_count)
           detection_count = 0
-        #   timestr = time.strftime("%Y%m%d-%H%M%S")
-        #   frame = 'frame_'+timestr+'.jpg' 
-        #   cv2.imwrite(os.path.join('./data' , frame), image)
+          timestr = time.strftime("%Y%m%d-%H%M%S")
+          frame = 'frame_'+timestr+'.jpg' 
+          cv2.imwrite(os.path.join('./data/frames/' , frame), image)
       start_time = time.time()
 
     # # Show the FPS
@@ -128,7 +128,7 @@ def main():
       '--model',
       help='Name of image classification model.',
       required=False,
-      default='./model/model.tflite')
+      default='./data/model/model.tflite')
   parser.add_argument(
       '--maxResults',
       help='Max of classification results.',
