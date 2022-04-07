@@ -81,10 +81,12 @@ COPY requirements.txt .
 RUN apt update && python -m pip install pip --upgrade && \
     pip install --no-cache-dir -r requirements.txt
 
+ADD . .
+
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -m model -a ${ARCH}
 
-ADD . .
+
 
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 ENV LD_LIBRARY_PATH=/opt/vc/lib
