@@ -40,7 +40,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends build-essential make gcc g++ -y \
     && apt-get install --no-install-recommends dpkg-dev -y \ 
     && apt-get install --no-install-recommends libjpeg-dev -y \ 
-    && sudo unzip curl nano cmake pkg-config \
+    && unzip curl nano cmake pkg-config \
     && openssl \
     openssh-client \
     libssl-dev \
