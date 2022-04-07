@@ -82,7 +82,7 @@ COPY requirements.txt .
 
 # RUN python -m pip install pip --upgrade && \
 #     pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --user -r requirements.txt
 
 ADD . .
 
