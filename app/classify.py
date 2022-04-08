@@ -35,7 +35,7 @@ _LEFT_MARGIN = 24  # pixels
 _TEXT_COLOR = (0, 0, 255)  # red
 _FONT_SIZE = 1
 _FONT_THICKNESS = 1
-_FPS_AVERAGE_FRAME_COUNT = 5
+_FPS_AVERAGE_FRAME_COUNT = 10
 
 
 def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
@@ -56,7 +56,8 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
   options = ImageClassifierOptions(
       num_threads=num_threads,
       max_results=max_results,
-      enable_edgetpu=enable_edgetpu)
+      enable_edgetpu=enable_edgetpu,
+      score_threshold=0.6)
   classifier = ImageClassifier(model, options)
 
   utils = CommonUtils()
@@ -79,43 +80,37 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
       )
 
     counter += 1
+    end_time = time.time()
+    seconds = end_time - start_time
+    fps = _FPS_AVERAGE_FRAME_COUNT / seconds
+
     # image = cv2.flip(image, 1)
     # test_image = 'data/Pune-fire-1.jpeg'
     # image = cv2.imread(test_image)
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     categories = classifier.classify(img)
-    # print(categories)
-
-    if len(categories) and categories[0].label == 'Fire' and categories[0].score > 0.5 :
+    
+    if len(categories) and categories[0].label == 'Fire' and categories[0].score > options.score_threshold :
+        category = categories[0]
+        fire_img = image
         detection_count += 1
-        print(categories[0])
-    for idx, category in enumerate(categories):
-      class_name = category.label
-      score = round(category.score, 2)
-      result_text = class_name + ' (' + str(score) + ')'
-      text_location = (_LEFT_MARGIN, (idx + 2) * _ROW_SIZE)
-      cv2.putText(image, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                  _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
-
-    # Calculate the FPS
-    if counter % _FPS_AVERAGE_FRAME_COUNT == 0:
-      end_time = time.time()
-      fps = _FPS_AVERAGE_FRAME_COUNT / (end_time - start_time)
-      if detection_count > 10:
+        if seconds >= 5 and detection_count >= 10:
           print('Fire Detectected count: >> ', detection_count)
-          detection_count = 0
+          class_name = category.label
+          score = round(category.score, 2)
           timestr = time.strftime("%Y%m%d-%H%M%S")
           serialNumber = utils.getserial()
           print('serialNumber: >> ', serialNumber)
-          frame = serialNumber+'_frame_'+timestr+'.jpg' 
-          cv2.imwrite(os.path.join('./data/frames/' , frame), image)
-      start_time = time.time()
+          result_text = class_name + ' (' + str(score) + ') detected on ' +serialNumber+ ' at: ' +timestr
+          text_location = (_LEFT_MARGIN, (1) * _ROW_SIZE)
+          cv2.putText(fire_img, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+                      _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
-    # # Show the FPS
-    fps_text = 'FPS = ' + str(int(fps))
-    text_location = (_LEFT_MARGIN, _ROW_SIZE)
-    cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
-                _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
+          frame = serialNumber+'_frame_'+timestr+'.jpg' 
+          cv2.imwrite(os.path.join('./data/frames/' , frame), fire_img)
+          detection_count = 0
+          start_time = time.time()
+        print(categories[0])
 
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:
@@ -133,7 +128,7 @@ def main():
       '--model',
       help='Name of image classification model.',
       required=False,
-      default='./data/model/model.tflite')
+      default='./data/model/efficientnetv2.tflite')
   parser.add_argument(
       '--maxResults',
       help='Max of classification results.',

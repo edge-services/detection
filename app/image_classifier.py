@@ -55,7 +55,7 @@ class ImageClassifierOptions(object):
   num_threads: int = 1
   """The number of CPU threads to be used."""
 
-  score_threshold: float = 0.0
+  score_threshold: float = 0.6
   """The score threshold of classification results to return."""
 
 
