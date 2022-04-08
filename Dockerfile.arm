@@ -41,7 +41,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends dpkg-dev -y \ 
     && apt-get install --no-install-recommends libjpeg-dev -y \ 
     && apt-get install --no-install-recommends -y unzip curl nano cmake pkg-config \
-    openssl \
+    openssl sudo \
     openssh-client \
     libssl-dev \
     ffmpeg libsm6 libxext6 fswebcam libgconf2-dev libatlas-base-dev \
@@ -49,7 +49,7 @@ RUN apt-get update \
     python3-opencv \
     && python -m pip install pip --upgrade \
     && pip install --no-cache-dir -r requirements.txt \
-    && apt-get remove -y --purge make gcc build-essential \
+    # && apt-get remove -y --purge make gcc build-essential \
     && apt-get auto-remove -y \
     && rm -rf /var/lib/apt/lists/* \
     && find /usr/local/lib/python3.7 -name "*.pyc" -type f -delete
