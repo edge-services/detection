@@ -41,12 +41,12 @@ RUN apt-get update \
     && apt-get install --no-install-recommends dpkg-dev -y \ 
     && apt-get install --no-install-recommends libjpeg-dev -y \ 
     && apt-get install --no-install-recommends -y unzip curl nano cmake pkg-config \
-    openssl \
+    openssl setuptools wheel \
     openssh-client \
     libssl-dev \
     ffmpeg libsm6 libxext6 fswebcam libgconf2-dev libatlas-base-dev \
-    python3-dev python3-numpy \
-    python3-opencv \
+    # python3-dev python3-numpy \
+    # python3-opencv \
     && python -m pip install pip --upgrade \
     && pip install --no-cache-dir -r requirements.txt \
     && apt-get remove -y --purge make gcc build-essential \
@@ -69,25 +69,25 @@ RUN apt-get update \
 #     && rm -rf /var/lib/apt/lists/* \
 #     && apt-get -y autoremove
 
-# RUN python -m venv /opt/venv
-# ENV PATH="/opt/venv/bin:$PATH"
-# ENV PATH="$PATH:/opt/vc/bin"
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PATH="$PATH:/opt/vc/bin"
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/opt/venv/lib:/usr/lib:/lib:/usr/share:/usr/share
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 
 RUN apt-get update
 
-# RUN addgroup --gid 1001 --system app && \
-#     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
-#     && chgrp -R 0 /opt/venv/lib \
-#     && chmod -R g=u /opt/venv/lib
+RUN addgroup --gid 1001 --system app && \
+    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
+    && chgrp -R 0 /opt/venv/lib \
+    && chmod -R g=u /opt/venv/lib
 
 # RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
 #     && ldconfig \
 #     && python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
 
 RUN chmod 755 /app/setup.sh && \
-    bash /app/setup.sh -m model -a ${ARCH} -d data
+    bash /app/setup.sh -a ${ARCH} -d data
 
 COPY ./app .
 
@@ -96,6 +96,6 @@ COPY ./app .
 ENV TZ Asia/Kolkata
 ENV PYTHONPATH /usr/lib/python3/dist-packages
 
-USER root
+USER app
 
 CMD ["python", "classify.py"]
