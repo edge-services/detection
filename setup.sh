@@ -41,7 +41,7 @@ fi
     # && rm -rf /usr/src/python ~/.cache
 
 # Download TF Lite model with metadata.
-FILE=${DATA_DIR}/model.tflite
+FILE=${DATA_DIR}/model/model.tflite
 if [ ! -f "$FILE" ]; then
   # curl \
   #   -L 'https://tfhub.dev/tensorflow/lite-model/efficientnet/lite0/uint8/2?lite-format=tflite' \

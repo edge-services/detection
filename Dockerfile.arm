@@ -45,29 +45,14 @@ RUN apt-get update \
     openssh-client \
     libssl-dev \
     ffmpeg libsm6 libxext6 fswebcam libgconf2-dev libatlas-base-dev \
-    # python3-dev python3-numpy \
-    # python3-opencv \
+    python3-dev python3-numpy \
+    python3-opencv \
     && python -m pip install pip --upgrade \
     && pip install --no-cache-dir -r requirements.txt \
     && apt-get remove -y --purge make gcc build-essential \
     && apt-get auto-remove -y \
     && rm -rf /var/lib/apt/lists/* \
     && find /usr/local/lib/python3.7 -name "*.pyc" -type f -delete
-
-# RUN apt update && \
-#     apt -qy install --no-install-recommends \
-#     sudo unzip curl nano make \
-#     build-essential cmake pkg-config \
-#     gcc g++ \
-#     openssl \
-#     openssh-client \
-#     libssl-dev \
-#     ffmpeg libsm6 libxext6 fswebcam libgconf2-dev \
-#     python3-dev python3-numpy \
-#     python3-opencv \
-#     # cleanup
-#     && rm -rf /var/lib/apt/lists/* \
-#     && apt-get -y autoremove
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"

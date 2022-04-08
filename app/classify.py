@@ -100,7 +100,7 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
           score = round(category.score, 2)
           timestr = time.strftime("%Y%m%d-%H%M%S")
           serialNumber = utils.getserial()
-          print('serialNumber: >> ', serialNumber)
+          # print('serialNumber: >> ', serialNumber)
           result_text = class_name + ' (' + str(score) + ') detected on ' +serialNumber+ ' at: ' +timestr
           text_location = (_LEFT_MARGIN, (1) * _ROW_SIZE)
           cv2.putText(fire_img, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
