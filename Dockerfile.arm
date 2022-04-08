@@ -41,7 +41,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends dpkg-dev -y \ 
     && apt-get install --no-install-recommends libjpeg-dev -y \ 
     && apt-get install --no-install-recommends -y unzip curl nano cmake pkg-config \
-    openssl setuptools wheel \
+    openssl \
     openssh-client \
     libssl-dev \
     ffmpeg libsm6 libxext6 fswebcam libgconf2-dev libatlas-base-dev \
