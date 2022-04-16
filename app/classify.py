@@ -28,6 +28,7 @@ import cv2
 from image_classifier import ImageClassifier
 from image_classifier import ImageClassifierOptions
 from utils import CommonUtils
+from handlers.cloud_sync import CloudSync
 
 # Visualization parameters
 _ROW_SIZE = 20  # pixels
@@ -52,6 +53,9 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
       height: The height of the frame captured from the camera.
   """
 
+  cloudAPI = CloudSync({})
+  cloudAPI.syncWithCloud()
+ 
   # Initialize the image classification model
   options = ImageClassifierOptions(
       num_threads=num_threads,
@@ -94,7 +98,7 @@ def run(model: str, max_results: int, num_threads: int, enable_edgetpu: bool,
         category = categories[0]
         fire_img = image
         detection_count += 1
-        if seconds >= 5 and detection_count >= 10:
+        if seconds >= 10 and detection_count >= 20:
           print('Fire Detectected count: >> ', detection_count)
           class_name = category.label
           score = round(category.score, 2)
@@ -128,7 +132,7 @@ def main():
       '--model',
       help='Name of image classification model.',
       required=False,
-      default='./data/model/efficientnetv2.tflite')
+      default='./data/model/seq-mobilenet.tflite')
   parser.add_argument(
       '--maxResults',
       help='Max of classification results.',

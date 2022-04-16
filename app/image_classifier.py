@@ -55,7 +55,7 @@ class ImageClassifierOptions(object):
   num_threads: int = 1
   """The number of CPU threads to be used."""
 
-  score_threshold: float = 0.6
+  score_threshold: float = 0.98
   """The score threshold of classification results to return."""
 
 
@@ -135,10 +135,13 @@ class ImageClassifier(object):
     self._input_height = interpreter.get_input_details()[0]['shape'][1]
     self._input_width = interpreter.get_input_details()[0]['shape'][2]
 
-    self._is_quantized_input = interpreter.get_input_details(
-    )[0]['dtype'] == np.uint8
-    self._is_quantized_output = interpreter.get_output_details(
-    )[0]['dtype'] == np.uint8
+    # self._is_quantized_input = interpreter.get_input_details(
+    # )[0]['dtype'] == np.uint8
+    # self._is_quantized_output = interpreter.get_output_details(
+    # )[0]['dtype'] == np.uint8
+
+    self._is_quantized_input = self._input_details[0]['dtype'] == np.uint8
+    self._is_quantized_output = self._output_details[0]['dtype'] == np.uint8
 
     self._interpreter = interpreter
     self._options = options
@@ -153,14 +156,16 @@ class ImageClassifier(object):
     """Preprocess the input image as required by the TFLite model."""
     # input_tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     input_tensor = cv2.resize(image, (self._input_width, self._input_height))
+    # print('Quantized: ', self._is_quantized_input)
+    # self._is_quantized_input = True
     if not self._is_quantized_input:
         input_tensor = (np.float32(input_tensor) - self._mean) / self._std
-        # print('Quantized: ', self._is_quantized_input)
         # input_tensor = np.float32(input_tensor) / 255
         # input_tensor = np.expand_dims(input_tensor, axis=0)
+    else:
+        input_tensor = np.float32(input_tensor) / 255
     return input_tensor
 
-  # TODO(khanhlvg): Migrate to TensorImage once it's published.
   def classify(self, image: np.ndarray) -> List[Category]:
     """Classify an input image.
 
@@ -175,8 +180,8 @@ class ImageClassifier(object):
     # self._interpreter.set_tensor(self._input_details[0]['index'], image)
     self._interpreter.invoke()
     output_tensor = self._interpreter.get_tensor(self._output_details[0]['index'])
-    output_tensor = np.squeeze(output_tensor)
     # print(output_tensor)
+    output_tensor = np.squeeze(output_tensor)    
     return self._postprocess(output_tensor)
 
   def _postprocess(self, output_tensor: np.ndarray) -> List[Category]:

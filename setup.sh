@@ -28,6 +28,8 @@ else
   pip install --no-cache-dir tflite-support==0.3.1  
 fi
 
+apt-get remove -y --purge make gcc build-essential
+
 # echo $requirement
 
 # Install Python dependencies.
@@ -47,6 +49,6 @@ if [ ! -f "$FILE" ]; then
   #   -L 'https://tfhub.dev/tensorflow/lite-model/efficientnet/lite0/uint8/2?lite-format=tflite' \
   #   -o ${FILE}
   curl \
-    -L 'https://gurvsin3-visualrecognition.s3.jp-tok.cloud-object-storage.appdomain.cloud/efficientnetv2.tflite' \
+    -L 'https://gurvsin3-visualrecognition.s3.jp-tok.cloud-object-storage.appdomain.cloud/seq-mobilenet.tflite' \
     -o ${FILE}
 fi
