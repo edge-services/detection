@@ -86,13 +86,17 @@ class CloudSync(object):
         return r.json()
 
     def syncWithCloud(self):
-        print('IN syncWithCloud')
-        self.cache.clear()
-        serialNumber = self.utils.getserial()
-        devices = self.fetchDeviceData(serialNumber=serialNumber)
-        if devices and devices[0]:
-            thisDevice = devices[0]
-        # print('thisDevice: >> ', thisDevice)
-        attributes = self.fetchAttributes(entityType='DEVICE', deviceId=thisDevice['id'])
-        print('attributes: >> ', attributes)
+        netAvailable = self.utils.is_connected()
+        print('IN syncWithCloud, netAvailable: ', netAvailable)
+        if netAvailable:
+            self.cache.clear()
+            serialNumber = self.utils.getserial()
+            devices = self.fetchDeviceData(serialNumber=serialNumber)
+            if devices and devices[0]:
+                thisDevice = devices[0]
+            # print('thisDevice: >> ', thisDevice)
+            attributes = self.fetchAttributes(entityType='DEVICE', deviceId=thisDevice['id'])
+            print('attributes: >> ', attributes)
+        else:
+            print('Internet Not Available')
         
