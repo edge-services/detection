@@ -132,7 +132,7 @@ def main():
       '--model',
       help='Name of image classification model.',
       required=False,
-      default='./data/model/seq-mobilenet.tflite')
+      default='./data/model/model.tflite')
   parser.add_argument(
       '--maxResults',
       help='Max of classification results.',

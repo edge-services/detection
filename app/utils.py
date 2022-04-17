@@ -15,7 +15,8 @@ class CommonUtils(object):
                     cpuserial = line[10:26]
                 f.close()
         except:
-            cpuserial = "darwin"
+            # cpuserial = "darwin"
+            cpuserial = "10000000f0d61812" 
         
         return cpuserial
 
