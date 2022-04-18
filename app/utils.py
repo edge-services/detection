@@ -1,6 +1,8 @@
 
 import json
 import socket
+import requests
+
 
 class CommonUtils(object):
 
@@ -30,5 +32,10 @@ class CommonUtils(object):
         except OSError:
             pass
         return False
+
+    def downloadFile(self, file_url, path_to_save):
+        response = requests.get(file_url)
+        open(path_to_save, "wb").write(response.content)
+
 
 
