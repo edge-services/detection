@@ -3,11 +3,26 @@ import json
 import socket
 import requests
 
+class Singleton(object):
+        def __new__(cls, *args, **kwds):
+            it = cls.__dict__.get("__it__")
+            if it is not None:
+                return it
+            cls.__it__ = it = object.__new__(cls)
+            it.init(*args, **kwds)
+            return it
+        def init(self, *args, **kwds):
+            pass
 
-class CommonUtils(object):
+
+class CommonUtils(Singleton):
 
     def __init__(self) -> None:
         """ Initialize CommonUtils """
+        self.cache = {
+            'UPDATES': False,
+            'CONFIG': {}
+        }
     
     def getserial(self):
         cpuserial = "0000000000000000"
@@ -36,6 +51,12 @@ class CommonUtils(object):
     def downloadFile(self, file_url, path_to_save):
         response = requests.get(file_url)
         open(path_to_save, "wb").write(response.content)
+
+    def setInCache(self, key, value):
+        self.cache[key] = value
+
+    def getFromCache(self, key):
+        return self.cache[key]
 
 
 

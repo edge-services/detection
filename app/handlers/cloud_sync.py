@@ -5,25 +5,23 @@ from dotenv import load_dotenv
 from cachetools import cached, TTLCache
 from cachetools.keys import hashkey
 from functools import partial
-
 from utils import CommonUtils
 
 class CloudSync(object):
 
     cache = TTLCache(maxsize=100, ttl=86400)
-    utils = CommonUtils()
     
     def __init__(
         self,
-        CONFIG
+        utils: CommonUtils
     ) -> None:
-        self.config = CONFIG
         load_dotenv()
         self._tenant_id = os.environ.get("TENANT_ID")
         self._auth_svc_url = os.environ.get("auth_svc_url")
         self._iot_svc_url = os.environ.get("iot_svc_url")
         self._tokens = None
         self._thisDevice = None
+        self.utils = utils
         
     @cached(cache, key=partial(hashkey, 'token'))
     def fetchToken(self):
@@ -61,7 +59,8 @@ class CloudSync(object):
         devices = r.json()
         if devices and devices[0]:
             self._thisDevice = devices[0]
-            self.saveLocal(self._thisDevice, 'thisDevice.json')    
+            self.saveLocal(self._thisDevice, 'thisDevice.json')   
+        self.utils.cache['thisDevice'] = self._thisDevice 
         return self._thisDevice
 
     @cached(cache, key=partial(hashkey, 'attributes'))
@@ -79,8 +78,7 @@ class CloudSync(object):
                             "type": "SHARED",
                             "metadata.entityType": entityType,
                             "metadata.entityCategoryId": self._thisDevice['metadata']['entityCategoryId'],
-                            "metadata.tenantId": self._tenant_id,
-                            "metadata.accountId": {"exists": False}
+                            "metadata.tenantId": self._tenant_id
                         },
                         "fields": {
                             "id": True,
@@ -114,8 +112,7 @@ class CloudSync(object):
                         "where": {
                             "metadata.entityType": entityType,
                             "metadata.entityCategoryId": self._thisDevice['metadata']['entityCategoryId'],
-                            "metadata.tenantId": self._tenant_id,
-                            "metadata.accountId": {"exists": False}
+                            "metadata.tenantId": self._tenant_id
                         },
                         "fields": {
                             "createdOn": False,
@@ -155,17 +152,18 @@ class CloudSync(object):
             print('Exception in syncWithCloud: >> ', err)
 
     def syncWithLocal(self):
-        self._thisDevice = self.loadData(self.config['DATA_DIR'] + '/thisDevice.json')
+        self._thisDevice = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/thisDevice.json')
+        self.utils.cache['thisDevice'] = self._thisDevice 
         self.checkAIModel()
         print('<<<<<< Data in Sync now with local >>>>>>')
 
     def saveLocal(self, data, fileName):
         json_object = json.dumps(data, indent = 4)       
-        with open(os.path.join(self.config['DATA_DIR'], fileName), "w") as outfile:
+        with open(os.path.join(self.utils.cache['CONFIG']['DATA_DIR'], fileName), "w") as outfile:
             outfile.write(json_object)
 
     def checkAIModel(self):        
-        if(os.path.exists(self.config['LOCAL_MODEL_PATH'])):
+        if(os.path.exists(self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])):
             return True
 
     def downloadAIModel(self, attributes):
@@ -174,7 +172,7 @@ class CloudSync(object):
                 for a in attributes:
                     if a['key'] == 'MODEL_PATH':
                         print('IN downloadAIModel, URL: >>  ', a['defaultValue'])
-                        self.utils.downloadFile(a['defaultValue'], self.config['LOCAL_MODEL_PATH'])
+                        self.utils.downloadFile(a['defaultValue'], self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])
         except Exception as err:
             print('Exception in downloadAIModel: >> ', err)
 

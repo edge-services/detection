@@ -3,22 +3,14 @@
 import os
 import json
 from dotenv import load_dotenv
-
 from kafka import KafkaProducer
-
-from utils import CommonUtils
 
 class Producer(object):
 
-    utils = CommonUtils()
-
     def __init__(
-        self,
-        thisDevice
+        self
     ) -> None:
         load_dotenv()
-        self.thisDevice = thisDevice
-        # topic = "updates"
         KAFKA_BROKERS=os.environ.get("kafka_brokers")
         sasl_mechanism = "PLAIN"
         kafka_username = os.environ.get("kafka_username")

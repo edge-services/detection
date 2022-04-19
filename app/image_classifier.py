@@ -55,7 +55,7 @@ class ImageClassifierOptions(object):
   num_threads: int = 1
   """The number of CPU threads to be used."""
 
-  score_threshold: float = 0.98
+  score_threshold: float = 0.80
   """The score threshold of classification results to return."""
 
 
@@ -114,19 +114,23 @@ class ImageClassifier(object):
     # label_map_file = displayer.get_associated_file_buffer(file_name).decode()
     # label_list = list(filter(len, label_map_file.splitlines()))
     label_list = ['Fire', 'Non Fire']
+    self._model_path = model_path
+    self.setupInterpreter(options, label_list)
+  
+  def setupInterpreter(self, options, label_list):
+    self._options = options
     self._label_list = label_list
-
-    # Initialize TFLite model.
+      # Initialize TFLite model.
     if options.enable_edgetpu:
       if edgetpu_lib_name() is None:
         raise OSError("The current OS isn't supported by Coral EdgeTPU.")
       interpreter = Interpreter(
-          model_path=model_path,
+          model_path=self._model_path,
           experimental_delegates=[load_delegate(edgetpu_lib_name())],
           num_threads=options.num_threads)
     else:
       interpreter = Interpreter(
-          model_path=model_path, num_threads=options.num_threads)
+          model_path=self._model_path, num_threads=options.num_threads)
     interpreter.allocate_tensors()
 
     self._input_details = interpreter.get_input_details()
@@ -135,16 +139,10 @@ class ImageClassifier(object):
     self._input_height = interpreter.get_input_details()[0]['shape'][1]
     self._input_width = interpreter.get_input_details()[0]['shape'][2]
 
-    # self._is_quantized_input = interpreter.get_input_details(
-    # )[0]['dtype'] == np.uint8
-    # self._is_quantized_output = interpreter.get_output_details(
-    # )[0]['dtype'] == np.uint8
-
     self._is_quantized_input = self._input_details[0]['dtype'] == np.uint8
     self._is_quantized_output = self._output_details[0]['dtype'] == np.uint8
 
     self._interpreter = interpreter
-    self._options = options
 
   def _set_input_tensor(self, image: np.ndarray) -> None:
     """Sets the input tensor."""

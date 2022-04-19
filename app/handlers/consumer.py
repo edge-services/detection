@@ -5,15 +5,15 @@ import json
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
 import threading
+from utils import CommonUtils
 
 class Consumer(threading.Thread):
 
-    def __init__(self, thisDevice, restartFuync):
+    def __init__(self, utils: CommonUtils):
         threading.Thread.__init__(self)
         self.stop_event = threading.Event()
         load_dotenv()
-        self.thisDevice = thisDevice
-        self.restartFuync = restartFuync
+        self.utils = utils
         KAFKA_BROKERS=os.environ.get("kafka_brokers")
         sasl_mechanism = "PLAIN"
         kafka_username = os.environ.get("kafka_username")
@@ -27,8 +27,8 @@ class Consumer(threading.Thread):
                               sasl_mechanism = sasl_mechanism,
                               sasl_plain_username = kafka_username,
                               sasl_plain_password = kafka_password,
-                              group_id=self.thisDevice['metadata']['entityCategoryId'],
-                              auto_offset_reset='earliest', enable_auto_commit=False,
+                              group_id=self.utils.cache['thisDevice']['metadata']['entityCategoryId'],
+                              auto_offset_reset='earliest', enable_auto_commit=True,
                             #   auto_commit_interval_ms=1000,
                               value_deserializer=lambda m: json.loads(m.decode('utf-8')))
 
@@ -47,7 +47,7 @@ class Consumer(threading.Thread):
                                                     message.offset, message.key,
                                                     message.value))
                     self.consumer.commit()
-                    self.restartFuync()
+                    self.utils.cache['UPDATES'] = True
                     if self.stop_event.is_set():
                         print('Consumer Stopped >>>>> ')
                         break
