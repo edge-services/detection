@@ -68,7 +68,7 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
     && python -m pip install pip --upgrade && pip install --no-cache-dir -r requirements.txt
 
 RUN chmod 755 /app/setup.sh && \
-    bash /app/setup.sh -m model -a ${ARCH}
+    bash /app/setup.sh -d data -a ${ARCH}
 
 COPY ./app .
 
