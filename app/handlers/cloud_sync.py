@@ -141,7 +141,9 @@ class CloudSync(object):
                 self._thisDevice = self.fetchDeviceData(serialNumber=serialNumber)
                 # if self._thisDevice and self._thisDevice['id']:
                 attributes = self.fetchAttributes()
-                self.downloadAIModel(attributes)
+                print('Total Attributes Fetched: >> ', len(attributes))
+                self.updateAppConfig(attributes)
+                self.downloadAIModel()
                 rules = self.fetchRules()
                 print('\nrules: >> ', rules)
                 print('<<<<<< Data in Sync now with Cloud >>>>>>')
@@ -157,6 +159,17 @@ class CloudSync(object):
         self.checkAIModel()
         print('<<<<<< Data in Sync now with local >>>>>>')
 
+    def updateAppConfig(self, attributes):
+        if attributes and len(attributes) > 0:
+            for attrib in attributes:
+                if attrib['type'] == 'SHARED':
+                    if attrib['dataType'] == 'float':
+                        self.utils.cache['CONFIG'][attrib['key']] = float(attrib['defaultValue'])
+                    elif attrib['dataType'] == 'number':
+                        self.utils.cache['CONFIG'][attrib['key']] = int(attrib['defaultValue'])
+                    else:
+                        self.utils.cache['CONFIG'][attrib['key']] = attrib['defaultValue']
+
     def saveLocal(self, data, fileName):
         json_object = json.dumps(data, indent = 4)       
         with open(os.path.join(self.utils.cache['CONFIG']['DATA_DIR'], fileName), "w") as outfile:
@@ -166,13 +179,11 @@ class CloudSync(object):
         if(os.path.exists(self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])):
             return True
 
-    def downloadAIModel(self, attributes):
+    def downloadAIModel(self):
         try:
-            if attributes and len(attributes) > 0:
-                for a in attributes:
-                    if a['key'] == 'MODEL_PATH':
-                        print('IN downloadAIModel, URL: >>  ', a['defaultValue'])
-                        self.utils.downloadFile(a['defaultValue'], self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])
+            if 'DOWNLOAD_MODEL_PATH' in self.utils.cache['CONFIG'].keys():
+                print('IN downloadAIModel, URL: >>  ', self.utils.cache['CONFIG']['DOWNLOAD_MODEL_PATH'])
+                self.utils.downloadFile(self.utils.cache['CONFIG']['DOWNLOAD_MODEL_PATH'], self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])
         except Exception as err:
             print('Exception in downloadAIModel: >> ', err)
 

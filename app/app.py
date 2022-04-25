@@ -14,7 +14,7 @@
 
 # python classify.py --model ./model/model.tflite --maxResults 3
 
-"""Main script to run image classification."""
+""" Main script to run image classification. """
 
 import os
 import argparse

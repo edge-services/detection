@@ -28,7 +28,7 @@ class Consumer(threading.Thread):
                               sasl_plain_username = kafka_username,
                               sasl_plain_password = kafka_password,
                               group_id=self.utils.cache['thisDevice']['metadata']['entityCategoryId'],
-                              auto_offset_reset='earliest', enable_auto_commit=True,
+                              auto_offset_reset='latest', enable_auto_commit=False,
                             #   auto_commit_interval_ms=1000,
                               value_deserializer=lambda m: json.loads(m.decode('utf-8')))
 

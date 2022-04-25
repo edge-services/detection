@@ -47,7 +47,7 @@ class Classify(object):
             # Variables to calculate FPS
             counter, fps, detection_count = 0, 0, 0
             start_time = time.time()
-
+            print('CONFIG: >> ', self.utils.cache['CONFIG'])
             camera = self.getCamera()
 
             # Continuously capture images from the camera and run inference

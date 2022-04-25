@@ -155,7 +155,7 @@ class ImageClassifier(object):
     # input_tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     input_tensor = cv2.resize(image, (self._input_width, self._input_height))
     # print('Quantized: ', self._is_quantized_input)
-    # self._is_quantized_input = True
+    self._is_quantized_input = True
     if not self._is_quantized_input:
         input_tensor = (np.float32(input_tensor) - self._mean) / self._std
         # input_tensor = np.float32(input_tensor) / 255
