@@ -24,6 +24,7 @@ if [ $arch = 'arm32v7' ]; then
   pip install https://github.com/iCorv/tflite-runtime/raw/master/tflite_runtime-2.4.0-cp37-cp37m-linux_armv7l.whl
   pip install --no-cache-dir tflite-support==0.3.1
 else
+  pip install --no-cache-dir opencv-python==4.5.5.64
   pip install --no-cache-dir tflite-runtime==2.7.0
   pip install --no-cache-dir tflite-support==0.3.1  
 fi
