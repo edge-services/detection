@@ -18,6 +18,8 @@ ARG DEBCONF_NOWARNINGS="yes"
 
 FROM ${ARCH}/python:${PYTHON_VERSION}-${OS}
 
+USER root
+
 LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.docker.dockerfile=".docker/Dockerfile.arm" \
     org.label-schema.license="Apache-2.0" \
@@ -48,8 +50,8 @@ RUN apt update && \
 
 WORKDIR /app
 
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# RUN python -m venv /opt/venv
+# ENV PATH="/opt/venv/bin:$PATH"
 ENV PATH="$PATH:/opt/vc/bin"
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/opt/venv/lib:/usr/lib:/lib:/usr/share:/usr/share
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
@@ -57,10 +59,10 @@ ENV TZ Asia/Kolkata
 
 RUN apt update
 
-RUN addgroup --gid 1001 --system app && \
-    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
-    && chgrp -R 0 /opt/venv/lib \
-    && chmod -R g=u /opt/venv/lib
+# RUN addgroup --gid 1001 --system app && \
+#     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
+#     && chgrp -R 0 /opt/venv/lib \
+#     && chmod -R g=u /opt/venv/lib
 
 COPY requirements.txt .
 COPY setup.sh .
@@ -72,10 +74,10 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -m model -a ${ARCH}
 
-COPY ./app ./app
+COPY ./app .
 
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 
-USER app
+# USER app
 
 CMD ["python", "app.py"]
