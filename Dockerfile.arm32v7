@@ -11,7 +11,7 @@
 # sinny777/detection_arm:latest
 
 ARG ARCH=arm32v7
-ARG PYTHON_VERSION=3.7.13
+ARG PYTHON_VERSION=3.7.3
 ARG OS=slim-buster
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DEBCONF_NOWARNINGS="yes"
@@ -45,8 +45,8 @@ RUN apt update && \
     python3-dev python3-numpy \
     python3-opencv \
     # cleanup
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get -y autoremove
+    && rm -rf /var/lib/apt/lists/* 
+    # && apt-get -y autoremove
 
 WORKDIR /app
 
