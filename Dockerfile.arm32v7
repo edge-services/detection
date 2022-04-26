@@ -1,14 +1,15 @@
 
 ## docker build -t edge-services/detection_arm:latest .
 
-# DISPLAY=:0 docker run --rm -it --name detection  \
+# docker run -itu 0 --name detection  \
 # --privileged \
 # --device /dev/video0 \
 # --device /dev/mem   \
 # --device /dev/vchiq \
 # -v /opt/vc:/opt/vc  \
 # -v /tmp:/tmp \
-# sinny777/detection_arm:latest
+# --env-file ./.env \
+# sinny777/detection_arm:latest bash
 
 ARG ARCH=arm32v7
 ARG PYTHON_VERSION=3.7.3
@@ -81,3 +82,4 @@ COPY ./app .
 # USER app
 
 CMD ["python", "app.py"]
+# CMD ["/bin/bash"]
