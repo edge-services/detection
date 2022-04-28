@@ -138,6 +138,7 @@ class CloudSync(object):
             if netAvailable:
                 self.cache.clear()
                 serialNumber = self.utils.getserial()
+                print('serialNumber: >> ', serialNumber)
                 self._thisDevice = self.fetchDeviceData(serialNumber=serialNumber)
                 # if self._thisDevice and self._thisDevice['id']:
                 attributes = self.fetchAttributes()

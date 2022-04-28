@@ -70,7 +70,7 @@ RUN echo "/opt/vc/lib" > /etc/ld.so.conf.d/00-vcms.conf \
 RUN chmod 755 /app/setup.sh && \
     bash /app/setup.sh -d data -a ${ARCH}
 
-COPY ./app ./app
+COPY ./app .
 
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 

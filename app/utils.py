@@ -31,9 +31,10 @@ class CommonUtils(Singleton):
             for line in f:
                 if line[0:6]=='Serial':
                     cpuserial = line[10:26]
-                f.close()
-        except:
+            f.close()
+        except Exception as err:
             # cpuserial = "darwin"
+            print('Exception in getSeril: >> ', err)
             cpuserial = "10000000f0d61812" 
         
         return cpuserial
