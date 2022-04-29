@@ -53,6 +53,7 @@ class Classify(object):
             # Continuously capture images from the camera and run inference
             while self.utils.cache['UPDATES'] == False and camera.isOpened():
                 success, image = camera.read()
+                time.sleep(0.5)
                 if not success:
                     # sys.exit(
                     #     'ERROR: Unable to read from webcam. Please verify your webcam settings.'
@@ -116,13 +117,10 @@ class Classify(object):
             camera = None
             classifier = None
             pass
-        except KeyboardInterrupt as ki:
-            print('KeyboardInterrupt in run detection: >> ', ki)
-        except Exception as err:
-            print('Exception in run detection: >> ', err)
-        # except (RuntimeError, TypeError, NameError) as err:
-        #     print('Error in run detection: >> ', err)
-            # pass
+        # except KeyboardInterrupt as ki:
+        #     print('KeyboardInterrupt in run detection: >> ', ki)
+        # except Exception as err:
+        #     print('Exception in run detection: >> ', err)
         finally:
             print('In Finally of Classify.run().....')
             if camera is not None:
