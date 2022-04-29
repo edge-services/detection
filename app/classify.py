@@ -100,7 +100,7 @@ class Classify(object):
                                         'message': result_text
                                     }
                                 }
-                            }                            
+                            }   
                             self.producer.publish('detection', payload)
                         detection_count = 0
                         start_time = time.time()

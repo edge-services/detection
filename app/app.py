@@ -63,7 +63,8 @@ def init():
     
     # classify = Classify(utils)    
     consumer = Consumer(utils)
-    consumer.start()
+    if consumer:
+        consumer.start()
 
 
 def run() -> None:

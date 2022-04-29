@@ -91,11 +91,11 @@
     ],
     "deployment": {
         "services": {
-            "security": {
+            "detection": {
                 "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
                 "network": "host",
                 "cap_add": ["SYS_ADMIN"],
-                "binds": ["/opt/vc/*:/opt/vc/*:rw", "/usr/share/*:/usr/share/*:rw", "/tmp/*:/tmp/*:rw", "/dev/*:/dev/*:rw"],
+                "binds": ["/opt/vc/*:/opt/vc/*:rw", "/usr/share/*:/usr/share/*:rw", "/tmp/*:/tmp/*:rw"],
                 "devices": ["/dev/video0:/dev/video0","/dev/mem:/dev/mem", "/dev/vchiq:/dev/vchiq"],
                 "privileged": true
             }
