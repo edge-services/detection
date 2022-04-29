@@ -48,13 +48,13 @@ RUN apt update && \
 
 WORKDIR /app
 
-# RUN python -m venv /opt/venv
-# ENV PATH="/opt/venv/bin:$PATH"
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 ENV PATH="$PATH:/opt/vc/bin"
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/usr/lib:/lib:/usr/share:/usr/share
-# ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/opt/venv/lib:/usr/lib:/lib:/usr/share:/usr/share
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vc/lib:/usr/local/lib:/opt/venv/lib:/usr/lib:/lib:/usr/share:/usr/share
 # ENV LD_LIBRARY_PATH=/usr/local/lib/python3.8/site-packages/cv2/qt/plugins
 ENV TZ Asia/Kolkata
+ENV PYTHONUNBUFFERED=1
 
 RUN apt update
 
@@ -79,4 +79,4 @@ COPY ./app .
 
 # USER app
 
-CMD ["python", "app.py"]
+CMD ["python", "-u", "app.py"]
