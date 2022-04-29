@@ -18,6 +18,8 @@ ARG DEBCONF_NOWARNINGS="yes"
 
 FROM ${ARCH}/python:${PYTHON_VERSION}-${OS}
 
+USER root
+
 LABEL org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.docker.dockerfile=".docker/Dockerfile.arm" \
     org.label-schema.license="Apache-2.0" \
@@ -55,10 +57,10 @@ ENV TZ Asia/Kolkata
 
 RUN apt update
 
-RUN addgroup --gid 1001 --system app && \
-    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
-    && chgrp -R 0 /opt/venv/lib \
-    && chmod -R g=u /opt/venv/lib
+# RUN addgroup --gid 1001 --system app && \
+#     adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app \
+#     && chgrp -R 0 /opt/venv/lib \
+#     && chmod -R g=u /opt/venv/lib
 
 COPY requirements.txt .
 COPY setup.sh .
@@ -74,6 +76,6 @@ COPY ./app .
 
 # ADD 00-vmcs.conf /etc/ld.so.conf.d/
 
-USER app
+# USER app
 
 CMD ["python", "app.py"]

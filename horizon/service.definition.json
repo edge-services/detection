@@ -14,7 +14,7 @@
             "name": "DATA_DIR",
             "label": "Data Directory",
             "type": "string",
-            "defaultValue": "/usr/share"
+            "defaultValue": "/tmp"
         },
         {
             "name": "TENANT_ID",
@@ -94,8 +94,9 @@
             "security": {
                 "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
                 "network": "host",
-                "binds": ["/opt/vc/lib:/opt/vc/lib:rw", "/opt/vc/bin:/opt/vc/bin:rw", "/usr/share:/usr/share:rw", "/tmp:/tmp:rw"],
-                "devices": ["/dev/mem:/dev/mem", "/dev/vchiq:/dev/vchiq"],
+                "cap_add": ["SYS_ADMIN"],
+                "binds": ["/opt/vc/*:/opt/vc/*:rw", "/usr/share/*:/usr/share/*:rw", "/tmp/*:/tmp/*:rw", "/dev/*:/dev/*:rw"],
+                "devices": ["/dev/video0:/dev/video0","/dev/mem:/dev/mem", "/dev/vchiq:/dev/vchiq"],
                 "privileged": true
             }
         }
