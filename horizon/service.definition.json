@@ -74,7 +74,7 @@
             "name": "kafka_certs_path",
             "label": "kafka_certs_path",
             "type": "string",
-            "defaultValue": "./certs"
+            "defaultValue": "./certs/Certificates.pem"
         },
         {
             "name": "USE_RADIO",

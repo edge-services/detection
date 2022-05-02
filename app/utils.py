@@ -1,7 +1,9 @@
 
+import os
 import json
 import socket
 import requests
+import logging
 
 class Singleton(object):
         def __new__(cls, *args, **kwds):
@@ -34,7 +36,7 @@ class CommonUtils(Singleton):
             f.close()
         except Exception as err:
             # cpuserial = "darwin"
-            print('Exception in getSeril: >> ', err)
+            # logging.error('Exception in getSeril: >> ', err)
             cpuserial = "10000000f0d61812" 
         
         return cpuserial

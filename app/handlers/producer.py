@@ -2,6 +2,7 @@
 
 import os
 import json
+import logging
 from dotenv import load_dotenv
 from kafka import KafkaProducer
 from utils import CommonUtils
@@ -14,6 +15,9 @@ class Producer(object):
     ) -> None:
         load_dotenv()
         self.utils = utils
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(self.utils.cache['CONFIG']['LOGLEVEL'])
+        
         sasl_mechanism = "PLAIN"
         security_protocol = "SASL_SSL"
         KAFKA_BROKERS= self.utils.cache['CONFIG']['kafka_brokers']        
@@ -29,7 +33,7 @@ class Producer(object):
                                 sasl_plain_username=kafka_username,
                                 sasl_plain_password=kafka_password)
         except Exception as err:
-            print("Error in Initializing Producer: >> ", err)
+            self.logger.error("Error in Initializing Producer: >> ", err)
     
     def publish(self, topic, payload):
         try:
@@ -37,5 +41,5 @@ class Producer(object):
             self.producer.send(topic, jd)
             self.producer.flush()
         except Exception as err:
-            print("Error in publishing: >> ", err)
+            self.logger.info("Error in publishing: >> ", err)
 

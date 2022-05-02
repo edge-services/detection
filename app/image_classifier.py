@@ -13,10 +13,12 @@
 # limitations under the License.
 """A wrapper for TensorFlow Lite image classification models."""
 
+import os
 import dataclasses
 import json
 import platform
 from typing import List
+import logging
 
 import cv2
 # from PIL import Image
@@ -154,7 +156,7 @@ class ImageClassifier(object):
     """Preprocess the input image as required by the TFLite model."""
     # input_tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     input_tensor = cv2.resize(image, (self._input_width, self._input_height))
-    # print('Quantized: ', self._is_quantized_input)
+    # logging.debug('Quantized: ', self._is_quantized_input)
     self._is_quantized_input = True
     if not self._is_quantized_input:
         input_tensor = (np.float32(input_tensor) - self._mean) / self._std
@@ -178,7 +180,7 @@ class ImageClassifier(object):
     # self._interpreter.set_tensor(self._input_details[0]['index'], image)
     self._interpreter.invoke()
     output_tensor = self._interpreter.get_tensor(self._output_details[0]['index'])
-    # print(output_tensor)
+    # logging.debug(output_tensor)
     output_tensor = np.squeeze(output_tensor)    
     return self._postprocess(output_tensor)
 

@@ -66,7 +66,7 @@
       },
       {
           "name": "kafka_certs_path",
-          "value": "./certs"
+          "value": "./certs/Certificates.pem"
       },
       {
           "name": "USE_RADIO",

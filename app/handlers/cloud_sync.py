@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+import logging
 from dotenv import load_dotenv
 from cachetools import cached, TTLCache
 from cachetools.keys import hashkey
@@ -22,10 +23,13 @@ class CloudSync(object):
         self._tokens = None
         self._thisDevice = None
         self.utils = utils
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(self.utils.cache['CONFIG']['LOGLEVEL'])
+        
         
     @cached(cache, key=partial(hashkey, 'token'))
     def fetchToken(self):
-        print('In fetchToken: >> ')
+        self.logger.info('In fetchToken: >> ')
         endpoint =  self._auth_svc_url + '/api/'+self._tenant_id+'/clients/token'
         CLIENT_ID = os.environ.get("CLIENT_ID")
         CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
@@ -38,7 +42,7 @@ class CloudSync(object):
 
     @cached(cache, key=partial(hashkey, 'deviceData'))
     def fetchDeviceData(self, serialNumber):
-        print('IN fetchDeviceData >> ')
+        self.logger.info('IN fetchDeviceData >> ')
         endpoint =  self._iot_svc_url + '/api/'+self._tenant_id+'/devices?filter=%s'        
         if self._tokens is None:
             self.fetchToken()
@@ -67,7 +71,7 @@ class CloudSync(object):
     def fetchAttributes(self):
         attributes = []
         if self._thisDevice and self._thisDevice['id']:
-            print('IN fetchAttributes, with deviceId >> ', self._thisDevice['id'])
+            self.logger.info('IN fetchAttributes, with deviceId >> %s ', self._thisDevice['id'])
             entityType = self._thisDevice['metadata']['entityType']
             endpoint =  self._iot_svc_url + '/api/'+self._tenant_id+'/'+entityType+'/attributes?filter=%s'        
             if self._tokens is None:
@@ -102,7 +106,7 @@ class CloudSync(object):
     def fetchRules(self):
         rules = []
         if self._thisDevice and self._thisDevice['id']:
-            print('IN fetchRules, with deviceId >> ', self._thisDevice['id'])
+            self.logger.info('IN fetchRules, with deviceId >> %s', self._thisDevice['id'])
             entityType = self._thisDevice['metadata']['entityType']
             endpoint =  self._iot_svc_url + '/api/'+self._tenant_id+'/rules?filter=%s'        
             if self._tokens is None:
@@ -134,31 +138,31 @@ class CloudSync(object):
     def syncWithCloud(self):
         try:
             netAvailable = self.utils.is_connected()
-            print('IN syncWithCloud, netAvailable: ', netAvailable)
+            self.logger.info('IN syncWithCloud, netAvailable: %s', netAvailable)
             if netAvailable:
                 self.cache.clear()
                 serialNumber = self.utils.getserial()
-                print('serialNumber: >> ', serialNumber)
+                self.logger.info('serialNumber: >> %s ', serialNumber)
                 self._thisDevice = self.fetchDeviceData(serialNumber=serialNumber)
                 # if self._thisDevice and self._thisDevice['id']:
                 attributes = self.fetchAttributes()
-                print('Total Attributes Fetched: >> ', len(attributes))
+                self.logger.info('Total Attributes Fetched: >> %d', len(attributes))
                 self.updateAppConfig(attributes)
                 self.downloadAIModel()
                 rules = self.fetchRules()
-                print('\nrules: >> ', rules)
-                print('<<<<<< Data in Sync now with Cloud >>>>>>')
+                self.logger.info('\nrules: >> %s', rules)
+                self.logger.info('<<<<<< Data in Sync now with Cloud >>>>>>')
             else:
-                print('Internet Not Available')
+                self.logger.info('Internet Not Available')
                 self.syncWithLocal()
         except Exception as err:
-            print('Exception in syncWithCloud: >> ', err)
+            self.logger.error('Exception in syncWithCloud: >> ', err)
 
     def syncWithLocal(self):
         self._thisDevice = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/thisDevice.json')
         self.utils.cache['thisDevice'] = self._thisDevice 
         self.checkAIModel()
-        print('<<<<<< Data in Sync now with local >>>>>>')
+        self.logger.info('<<<<<< Data in Sync now with local >>>>>>')
 
     def updateAppConfig(self, attributes):
         if attributes and len(attributes) > 0:
@@ -183,10 +187,10 @@ class CloudSync(object):
     def downloadAIModel(self):
         try:
             if 'DOWNLOAD_MODEL_PATH' in self.utils.cache['CONFIG'].keys():
-                print('IN downloadAIModel, URL: >>  ', self.utils.cache['CONFIG']['DOWNLOAD_MODEL_PATH'])
+                self.logger.info('IN downloadAIModel, URL: >>  %s ', self.utils.cache['CONFIG']['DOWNLOAD_MODEL_PATH'])
                 self.utils.downloadFile(self.utils.cache['CONFIG']['DOWNLOAD_MODEL_PATH'], self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])
         except Exception as err:
-            print('Exception in downloadAIModel: >> ', err)
+            self.logger.error('Exception in downloadAIModel: >> ', err)
 
     def loadData(self, json_path):
         f = open(json_path)
@@ -195,13 +199,13 @@ class CloudSync(object):
         return data
 
     def publishToFlow(self, payload):
-        # print("IN publishToFlow payload: ", payload); 
+        # self.logger.info("IN publishToFlow payload: ", payload); 
         if os.environ.get('FLOW_URL'):
-            # print('IN publishToFlow: >> Event: ', payload['event'])
+            # self.logger.info('IN publishToFlow: >> Event: ', payload['event'])
             try:
                 r = requests.post(url = os.environ.get('FLOW_URL')+'/publish', json=payload)
                 resp = r.json()
-                print('PUBLISH RESPONSE: >> ', resp)
+                self.logger.info('PUBLISH RESPONSE: >> %s ', resp)
             except Exception as err:
-                print(err)
+                self.logger.error(err)
            

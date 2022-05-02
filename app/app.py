@@ -16,15 +16,18 @@
 
 """ Main script to run image classification. """
 
+
 import os
 import argparse
 from nis import cat
 import sys
 import time
+import logging
+from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
 
 # import numpy as np
-import cv2
+# import cv2
 # from PIL import Image
 from image_classifier import ImageClassifier
 from image_classifier import ImageClassifierOptions
@@ -34,6 +37,14 @@ from handlers.producer import Producer
 from handlers.consumer import Consumer
 from classify import Classify
 
+logging.basicConfig(
+        format='%(asctime)s - %(levelname)s:%(message)s',
+        handlers=[
+            # RotatingFileHandler('logs.log',maxBytes=1000, backupCount=2),
+            logging.StreamHandler(), #print to console
+        ],
+        level=logging.ERROR
+    )
 
 def checkDirectories():
     DATA_DIR = os.environ.get("DATA_DIR")
@@ -46,6 +57,15 @@ def checkDirectories():
 
 def init():
     load_dotenv()
+    # logger.basicConfig(level=LOGLEVEL)
+    LOGLEVEL = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    utils.cache['CONFIG']['LOGLEVEL'] = LOGLEVEL
+
+    global logger
+    # logging.basicConfig(format='%(asctime)s - %(levelname)s:%(message)s', level=utils.cache['CONFIG']['LOGLEVEL'])
+    logger = logging.getLogger(__name__)
+    logger.setLevel(utils.cache['CONFIG']['LOGLEVEL'])
+    
     DATA_DIR, MODEL_DIR = checkDirectories()
     utils.cache['CONFIG']['DATA_DIR'] = DATA_DIR
     utils.cache['CONFIG']['MODEL_DIR'] = MODEL_DIR
@@ -66,7 +86,7 @@ def init():
         cloudAPI.syncWithCloud()
         # cloudAPI.syncWithLocal()      
     else:
-        print('Load data locally >>>')
+        logger.info('Load data locally >>>')
         cloudAPI.syncWithLocal()
     
     # classify = Classify(utils)    
@@ -82,12 +102,12 @@ def run() -> None:
         classify.execute()
         while True:
             if utils.cache['UPDATES'] == True:
-                print('\n\nNEW UPDATES NEED TO MERGE >>>>>>>>>> \n\n')
+                logger.info('\n\nNEW UPDATES NEED TO MERGE >>>>>>>>>> \n\n')
                 if utils.is_connected:        
                     cloudAPI.syncWithCloud()
                     # cloudAPI.syncWithLocal()      
                 else:
-                    print('Load data locally >>>')
+                    logger.info('Load data locally >>>')
                     cloudAPI.syncWithLocal()
                 utils.cache['UPDATES'] = False
                 classify = None
@@ -96,12 +116,12 @@ def run() -> None:
                 classify.execute()
  
     except KeyboardInterrupt as ki:
-         print('KeyboardInterrupt in run detection: >> ', ki)
+         logger.error('KeyboardInterrupt in run detection: >> ', ki)
     except Exception as err:
-        print('Exception in run detection: >> ', err)
+        logger.error('Exception in run detection: >> ', err)
     finally:
         # consumer.stop()
-        print('In Finally of Classify.run().....')
+        logger.info('In Finally of Classify.run().....')
 
 
 def main():

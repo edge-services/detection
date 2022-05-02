@@ -2,6 +2,7 @@
 
 import os
 import json
+import logging
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
 import threading
@@ -14,6 +15,9 @@ class Consumer(threading.Thread):
         self.stop_event = threading.Event()
         load_dotenv()
         self.utils = utils
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(self.utils.cache['CONFIG']['LOGLEVEL'])
+        
         sasl_mechanism = "PLAIN"
         security_protocol = "SASL_SSL"
         KAFKA_BROKERS= self.utils.cache['CONFIG']['kafka_brokers']        
@@ -33,12 +37,12 @@ class Consumer(threading.Thread):
                                 #   auto_commit_interval_ms=1000,
                                 value_deserializer=lambda m: json.loads(m.decode('utf-8')))
         except Exception as err:
-            print("Error in Initializing Consumer: >> ", err)
+            self.logger.error("Error in Initializing Consumer: >> ", err)
 
     def stop(self):
         self.stop_event.set()
         self.consumer.close()
-        print('Consumer Closed....')
+        self.logger.info('Consumer Closed....')
 
     def run(self):
         topics = ['updates']
@@ -47,16 +51,16 @@ class Consumer(threading.Thread):
                 self.consumer.subscribe(topics)
                 while not self.stop_event.is_set():
                     for message in self.consumer:
-                        print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
+                        self.logger.info ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
                                                         message.offset, message.key,
                                                         message.value))
                         self.consumer.commit()
                         self.utils.cache['UPDATES'] = True
                         if self.stop_event.is_set():
-                            print('Consumer Stopped >>>>> ')
+                            logging.debug('Consumer Stopped >>>>> ')
                             break
         finally:
             if self.consumer:
                 self.consumer.close()
-            print('Consumer Ended....')
+            self.logger.info('Consumer Ended....')
 

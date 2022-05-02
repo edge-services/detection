@@ -4,6 +4,7 @@ import argparse
 from nis import cat
 import sys
 import time
+import logging
 from dotenv import load_dotenv
 
 # import numpy as np
@@ -32,10 +33,13 @@ class Classify(object):
         self.utils = utils
         self.producer = Producer(utils)
 
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(self.utils.cache['CONFIG']['LOGLEVEL'])
+
     def execute(self) -> None:
         """Continuously run inference on images acquired from the camera.  """
         try:
-            print('\n\nIN Classify RUN method: >>>>>> ')
+            self.logger.info('\n\nIN Classify RUN method: >>>>>> ')
             # Initialize the image classification model
             options = ImageClassifierOptions(
                 num_threads=self.utils.cache['CONFIG']['NO_THREADS'],
@@ -47,7 +51,7 @@ class Classify(object):
             # Variables to calculate FPS
             counter, fps, detection_count = 0, 0, 0
             start_time = time.time()
-            print('CONFIG: >> ', self.utils.cache['CONFIG'])
+            # self.logger.info('CONFIG: >> ', self.utils.cache['CONFIG'])
             camera = self.getCamera()
 
             # Continuously capture images from the camera and run inference
@@ -58,7 +62,7 @@ class Classify(object):
                     # sys.exit(
                     #     'ERROR: Unable to read from webcam. Please verify your webcam settings.'
                     # )
-                    print('ERROR: Unable to read from webcam. Please verify your webcam settings.')
+                    self.logger.info('ERROR: Unable to read from webcam. Please verify your webcam settings.')
                     time.sleep(2)
                     self.getCamera()
                     continue
@@ -79,7 +83,7 @@ class Classify(object):
                     fire_img = image
                     detection_count += 1
                     if seconds >= 10 and detection_count >= 20:
-                        print('Fire Detectected count: >> ', detection_count)
+                        self.logger.info('Fire Detectected count: >> %d ', detection_count)
                         class_name = category.label
                         score = round(category.score, 2)
                         timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -105,7 +109,7 @@ class Classify(object):
                             self.producer.publish('detection', payload)
                         detection_count = 0
                         start_time = time.time()
-                    print(categories[0])
+                    self.logger.info(categories[0])
 
                 # Stop the program if the ESC key is pressed.
                 if cv2.waitKey(1) == 27:
@@ -118,11 +122,11 @@ class Classify(object):
             classifier = None
             pass
         # except KeyboardInterrupt as ki:
-        #     print('KeyboardInterrupt in run detection: >> ', ki)
+        #     self.logger.info('KeyboardInterrupt in run detection: >> ', ki)
         # except Exception as err:
-        #     print('Exception in run detection: >> ', err)
+        #     self.logger.info('Exception in run detection: >> ', err)
         finally:
-            print('In Finally of Classify.run().....')
+            self.logger.info('In Finally of Classify.run().....')
             if camera is not None:
                 camera.release()
                 cv2.destroyAllWindows()
