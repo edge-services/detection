@@ -57,7 +57,7 @@ class Classify(object):
             # Continuously capture images from the camera and run inference
             while self.utils.cache['UPDATES'] == False and camera.isOpened():
                 success, image = camera.read()
-                time.sleep(0.5)
+                # time.sleep(0.5)
                 if not success:
                     # sys.exit(
                     #     'ERROR: Unable to read from webcam. Please verify your webcam settings.'
