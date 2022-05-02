@@ -14,17 +14,17 @@ class Consumer(threading.Thread):
         self.stop_event = threading.Event()
         load_dotenv()
         self.utils = utils
-        KAFKA_BROKERS=os.environ.get("kafka_brokers")
         sasl_mechanism = "PLAIN"
-        kafka_username = os.environ.get("kafka_username")
-        kafka_password = os.environ.get("kafka_password")
         security_protocol = "SASL_SSL"
+        KAFKA_BROKERS= self.utils.cache['CONFIG']['kafka_brokers']        
+        kafka_username = self.utils.cache['CONFIG']['kafka_username']
+        kafka_password = self.utils.cache['CONFIG']['kafka_password']        
 
         try:
             self.consumer = KafkaConsumer(bootstrap_servers=KAFKA_BROKERS,
                                 security_protocol=security_protocol,
                                 ssl_check_hostname=True,
-                                ssl_cafile='./certs/Certificates.pem',
+                                ssl_cafile=self.utils.cache['CONFIG']['kafka_certs_path'],
                                 sasl_mechanism = sasl_mechanism,
                                 sasl_plain_username = kafka_username,
                                 sasl_plain_password = kafka_password,

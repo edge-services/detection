@@ -50,6 +50,14 @@ def init():
     utils.cache['CONFIG']['DATA_DIR'] = DATA_DIR
     utils.cache['CONFIG']['MODEL_DIR'] = MODEL_DIR
     utils.cache['CONFIG']['LOCAL_MODEL_PATH'] = os.path.join(MODEL_DIR, 'model.tflite')
+
+    utils.cache['CONFIG']['CLIENT_ID'] = os.environ.get("CLIENT_ID")
+    utils.cache['CONFIG']['CLIENT_SECRET'] = os.environ.get("CLIENT_SECRET")
+    utils.cache['CONFIG']['kafka_brokers'] = os.environ.get("kafka_brokers")
+    utils.cache['CONFIG']['kafka_username'] = os.environ.get("kafka_username")
+    utils.cache['CONFIG']['kafka_password'] = os.environ.get("kafka_password")
+    utils.cache['CONFIG']['kafka_certs_path'] = os.environ.get("kafka_certs_path")
+    
     global cloudAPI
     global classify
     cloudAPI = CloudSync(utils)  

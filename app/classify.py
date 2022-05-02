@@ -30,7 +30,7 @@ class Classify(object):
     ) -> None:
         load_dotenv()
         self.utils = utils
-        self.producer = Producer()
+        self.producer = Producer(utils)
 
     def execute(self) -> None:
         """Continuously run inference on images acquired from the camera.  """
