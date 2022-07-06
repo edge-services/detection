@@ -96,13 +96,19 @@ class Classify(object):
                         frame = serialNumber+'_frame_'+timestr+'.jpg' 
                         cv2.imwrite(os.path.join(self.utils.cache['CONFIG']['DATA_DIR'] + '/frames/' , frame), fire_img)
 
+                        thisDevice = self.utils.cache['thisDevice']
+
                         if self.producer:
                             payload = {
                                 'topic': 'detection',
                                 'event': {
                                     'type': 'SecurityAlert',
                                     'params': {
-                                        'message': result_text
+                                        'message': result_text,
+                                        'metadata': {
+                                            'deviceId': thisDevice['id'],
+                                            'location': thisDevice['location']
+                                        }
                                     }
                                 }
                             }   
