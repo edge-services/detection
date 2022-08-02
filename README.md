@@ -57,6 +57,7 @@ export HZN_EXCHANGE_USER_AUTH=admin:HjWsfSKGB9XY3XhLQPOmqpJ6eLWN3U
 curl http://<REPLACE_WITH_HUB_IP>:3090/v1/admin/version
 hzn version
 hzn exchange service list
+hzn agreement list
 
 ```
 
@@ -78,18 +79,17 @@ hzn exchange service list
   - Run below command for registering
 
 ```
-hzn register --policy security.policy.json
+hzn register --policy detection.policy.json
 
 ```
 
   - A few useful Horizon commands
 
 ```
-hzn service log -f ${SERVICE_NAME}
+hzn service log -f detection
 
 hzn unregister -f
 
-hzn version
 hzn agreement list
 hzn node list -v
 hzn exchange user list
