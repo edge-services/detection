@@ -1,20 +1,46 @@
 
-# edge-gateway service for Edge Computing
+# edge-detection service for Edge Computing
 
-### Pre-requisites
-    
-This edge service (Gateway) depends on [flows](https://github.com/edge-services/flows) and [InfluxDB](https://github.com/edge-services/Influxdb) edge services, so make sure all are registered with IEAM Agent before hand.
+### Pre-requisites for thhe Edge Device (Raspberry Pi 4 in this case)
 
-## Register Gateway Service with IBM Edge Application Manager
+  - [Raspbian 64 bit OS](https://www.makeuseof.com/install-64-bit-version-of-raspberry-pi-os/)
+  - Connect a Webcam and make sure following command works
+    - raspistill -o test.jpg
+  - [Install OpenHorizon Agent (IEAM Agent)](https://github.com/open-horizon/anax/tree/master/agent-install)
+    - Below command worked :
 
-    - Make sure IEAM Agent is installed and can access IEAM Hub
-    - Go inside "horizon" folder
-    - run following commands (CLI for openhorsizon)
+```
+sudo bash ./agent-install.sh -i . -u $HZN_EXCHANGE_USER_AUTH 
 
 ```
 
+  - Export following at Edge Devices or put this at the end of ~/.bashrc (Please change the IP and USER_AUTH)
+ 
+```
+export HZN_EXCHANGE_URL=http://169.38.91.92:3090/v1/
+export HZN_FSS_CSSURL=http://169.38.91.92:9443/
+export CERTIFICATE=agent-install.crt
 export HZN_ORG_ID=myorg
 export HZN_EXCHANGE_USER_AUTH=admin:HjWsfSKGB9XY3XhLQPOmqpJ6eLWN3U
+
+```
+
+### Commands to test everything's ok
+
+```
+curl http://<REPLACE_WITH_HUB_IP>:3090/v1/admin/version
+hzn version
+
+```
+
+## Register Detection Service with IBM Edge Application Manager (OpenHorizon)
+
+    - Make sure IEAM Agent is installed on the system that you are using to register edge service (detection) and can access IEAM Hub
+    - Clone GIT repo - https://github.com/edge-services/detection.git
+    - Go inside "horizon" folder
+    - Run following commands (CLI for openhorizon)
+
+```
 
 export ARCH=arm64
 eval $(hzn util configconv -f hzn.json) 
@@ -32,67 +58,26 @@ $hzn exchange deployment addpolicy -f deployment.policy.json ${HZN_ORG_ID}/polic
 <!-- $hzn exchange deployment removepolicy ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION} -->
 
 ```
-## Gateway Docker (Standalone - for testing)
+## Detection Docker (Standalone - for testing)
 
 - Create an .env file 
-- Run docker image for Edge-Gateway
+- Run docker image for Edge-Detection
 
 ```
 
-sudo docker run --rm -it --name edge-gateway -p 9000:9000 \
-    --env-file .env \
-    --net host \
-    -v /dev/mem:/dev/mem \
-    -v /sys/class/gpio:/sys/class/gpio \
-    --privileged \
-    sinny777/edge-gateway_arm64:1.0.0
+sudo docker run --rm -it --name detection  \
+  --privileged \
+  --device /dev/video0 \
+  --device /dev/mem   \
+  --device /dev/vchiq \
+  -v /opt/vc:/opt/vc  \
+  -v /tmp:/tmp \
+  --env-file .env \
+  sinny777/detection_arm64:latest
     
 ```
 
-## Output Example: 
-
-Radio data received: {"type":"HB_SENSOR","uniqueId":"SB_MICRO-3C71BF4340FC","temp":32.42,"hum":48.93848,"press":973.3259,"alt":337.8273}
-
-## BLUETOOTH
-
-```
-
-hciconfig
-
-sudo hciattach /dev/ttyAMA0 bcm43xx 921600 -
-
-sudo hciconfig hci0 reset
-
-sudo invoke-rc.d bluetooth restart
-
-/etc/init.d/bluetooth restart
-
-
-sudo hcitool -i hci0 lescan
-
-```
-
-## InfluxDB
-
-```
-docker run -p 8086:8086 \
-      --name influxdb2 \
-      -v influxdb2:/var/lib/influxdb2 \
-      -v $PWD/influxdb2:/var/lib/influxdb2 \
-      -v $PWD/config:/etc/influxdb2 \
-      -e DOCKER_INFLUXDB_INIT_MODE=upgrade \
-      -e DOCKER_INFLUXDB_INIT_USERNAME=sinny777 \
-      -e DOCKER_INFLUXDB_INIT_PASSWORD=1SatnamW \
-      -e DOCKER_INFLUXDB_INIT_ORG=IBM \
-      -e DOCKER_INFLUXDB_INIT_BUCKET=smartthings \
-      influxdb:2.0
-
-```
-
-'/var/lib/influxdb/meta/meta.db' does not exist
-
-
 ## Refrences
 
-- [Edge Computing](https://github.com/sinny777/edge-computing)
-- [Rule Engine](https://github.com/cachecontrol/json-rules-engine)
+- [OpenHorizon Agent Install](https://github.com/open-horizon/anax/tree/master/agent-install)
+- [RPi4 64 bit OS Install - Advance users](https://qengineering.eu/install-raspberry-64-os.html)
