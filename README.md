@@ -1,7 +1,33 @@
 
 # edge-detection service for Edge Computing
 
-### Pre-requisites for thhe Edge Device (Raspberry Pi 4 in this case)
+## Register Detection Service with IBM Edge Application Manager (OpenHorizon)
+
+    - Make sure IEAM Agent is installed on the system that you are using to register edge service (detection) and can access IEAM Hub
+    - Clone GIT repo - https://github.com/edge-services/detection.git
+    - Go inside "horizon" folder
+    - Run following commands (CLI for openhorizon)
+
+```
+
+export ARCH=arm64
+eval $(hzn util configconv -f hzn.json) 
+
+$hzn exchange service publish -f service.definition.json -P 
+<!-- $hzn exchange service list -->
+<!-- $hzn exchange service remove ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH} -->
+
+$hzn exchange service addpolicy -f service.policy.json ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH}
+<!-- $hzn exchange service listpolicy ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH} -->
+<!-- $hzn exchange service removepolicy ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH} -->
+
+$hzn exchange deployment addpolicy -f deployment.policy.json ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION}
+<!-- $hzn exchange deployment listpolicy ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION} -->
+<!-- $hzn exchange deployment removepolicy ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION} -->
+
+```
+
+### Pre-requisites for the Edge Device (Raspberry Pi 4 in this case)
 
   - [Raspbian 64 bit OS](https://www.makeuseof.com/install-64-bit-version-of-raspberry-pi-os/)
   - Connect a Webcam and make sure following command works
@@ -30,34 +56,50 @@ export HZN_EXCHANGE_USER_AUTH=admin:HjWsfSKGB9XY3XhLQPOmqpJ6eLWN3U
 ```
 curl http://<REPLACE_WITH_HUB_IP>:3090/v1/admin/version
 hzn version
+hzn exchange service list
 
 ```
 
-## Register Detection Service with IBM Edge Application Manager (OpenHorizon)
+## Register Edge Node with the Hub
 
-    - Make sure IEAM Agent is installed on the system that you are using to register edge service (detection) and can access IEAM Hub
-    - Clone GIT repo - https://github.com/edge-services/detection.git
-    - Go inside "horizon" folder
-    - Run following commands (CLI for openhorizon)
+  - Create a detection.policy.json file with following content
+
+```
+{
+  "properties": [
+    { "name": "hasCamera", "value": true },
+    { "name": "detection", "value": true },
+    { "name": "openhorizon.allowPrivileged", "value": true }    
+  ],
+  "constraints": [
+  ]
+}
+```
+  - Run below command for registering
+
+```
+hzn register --policy security.policy.json
 
 ```
 
-export ARCH=arm64
-eval $(hzn util configconv -f hzn.json) 
-
-$hzn exchange service publish -f service.definition.json -P 
-<!-- $hzn exchange service list -->
-<!-- $hzn exchange service remove ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH} -->
-
-$hzn exchange service addpolicy -f service.policy.json ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH}
-<!-- $hzn exchange service listpolicy ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH} -->
-<!-- $hzn exchange service removepolicy ${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_${ARCH} -->
-
-$hzn exchange deployment addpolicy -f deployment.policy.json ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION}
-<!-- $hzn exchange deployment listpolicy ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION} -->
-<!-- $hzn exchange deployment removepolicy ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERVICE_VERSION} -->
+  - A few useful Horizon commands
 
 ```
+hzn service log -f ${SERVICE_NAME}
+
+hzn unregister -f
+
+hzn version
+hzn agreement list
+hzn node list -v
+hzn exchange user list
+
+hzn --help
+hzn node --help
+hzn exchange pattern --help
+
+```
+
 ## Detection Docker (Standalone - for testing)
 
 - Create an .env file 
