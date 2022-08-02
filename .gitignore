@@ -22,7 +22,7 @@
 **/.vscode
 **/data
 .settings
-.env
+**/.env
 
 # credentials
 frame.jpg
