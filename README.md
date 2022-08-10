@@ -86,6 +86,8 @@ hzn register --policy detection.policy.json
   - A few useful Horizon commands
 
 ```
+
+hzn eventlog list -f
 hzn service log -f detection
 
 hzn unregister -f
