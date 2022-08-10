@@ -124,7 +124,6 @@ class Classify(object):
                         score = round(category.score, 2)
                         timestr = time.strftime("%Y%m%d-%H%M%S")
                         serialNumber = self.utils.cache['thisDevice']['deviceSerialNo']
-                        # result_text = 'Detected: ' +class_name + ' (' + str(score) + ')\nDetection Count: ' +detection_count+ 'Device Serial No: ' +serialNumber+ '\nDate & time: ' +timestr
                         result_text = 'Device Serial No: {0}\nDetected: {1} ({2: .2%} confidence ) \nDetection Count: {3}\nSeconds Count: {4: .2f}\nDate & time: {5}'.format(serialNumber, class_name, score, detection_count, seconds, timestr)
                         text_location = (_LEFT_MARGIN, (1) * _ROW_SIZE)
                         cv2.putText(fire_img, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
