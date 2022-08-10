@@ -42,10 +42,45 @@ class Classify(object):
             self.logger.info('\n\nIN Classify RUN method: >>>>>> ')
             # Initialize the image classification model
             options = ImageClassifierOptions(
+                label_allow_list=['Fire', 'Non Fire'],
                 num_threads=self.utils.cache['CONFIG']['NO_THREADS'],
                 max_results=self.utils.cache['CONFIG']['MAX_RESULTS'],
                 enable_edgetpu=self.utils.cache['CONFIG']['ENABLE_EDGE_TPU'],
                 score_threshold=self.utils.cache['CONFIG']['SCORE_THRESHOLD'])
+            
+            labelToDetect = 'Fire'
+            publishType = 'x-in-y'
+            timePeriod = 10
+            detectionCount = 20
+
+            rules = self.utils.cache['rules']
+            if rules and len(rules) > 0:
+                condition = rules[0]['condition']
+                # self.logger.info('\n\nCondition: >> %s\n', condition)
+                if condition and condition['type'] == 'all':
+                    children = condition['children']
+                    for child in children:
+                        if child['type'] == 'fact':
+                            if child['fact']['path'] == '$.class':
+                                labelToDetect = child['fact']['value'] 
+                            if child['fact']['path'] == '$.confidence' and child['fact']['value'] and (type(child['fact']['value']) == int or float):
+                                if child['fact']['value'] > 0:
+                                    options.score_threshold = child['fact']['value'] / 100
+                                else:
+                                    options.score_threshold = child['fact']['value']
+
+                
+                event = rules[0]['event']
+                # self.logger.info('Event: >> %s\n', event)
+                if event and event['params'] and event['params']['publish']:
+                    publishType = event['params']['publish']['when']
+                    if publishType == 'x-in-y':
+                        timePeriod = event['params']['publish']['timePeriod']
+                        detectionCount = event['params']['publish']['count']
+            
+            self.logger.info('LabelToDetect: >> %s', labelToDetect)
+            self.logger.info('Threshold: >> %s\n', options.score_threshold)
+
             classifier = ImageClassifier(self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'], options)
 
             # Variables to calculate FPS
@@ -74,21 +109,23 @@ class Classify(object):
 
                 # image = cv2.flip(image, 1)
                 # test_image = 'data/Pune-fire-1.jpeg'
-                # image = cv2.imread(test_image)
+                # image = cv2.imread(test_image) 
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 categories = classifier.classify(img)
-                
-                if len(categories) and categories[0].label == 'Fire' and categories[0].score > options.score_threshold :
+                if len(categories) and categories[0].label == labelToDetect and categories[0].score > options.score_threshold :
+                    self.logger.info(categories)
+                    # self.logger.info('%s is Detectected %d times in %d seconds: >> %d \n', labelToDetect, detection_count, seconds)
                     category = categories[0]
                     fire_img = image
                     detection_count += 1
-                    if seconds >= 10 and detection_count >= 20:
-                        self.logger.info('Fire Detectected count: >> %d ', detection_count)
+                    if publishType == 'every-time' or (publishType == 'x-in-y' and seconds >= timePeriod and detection_count >= detectionCount):
+                        self.logger.info('%s is Detectected %d times in %d seconds !!\n', labelToDetect, detection_count, seconds)
                         class_name = category.label
                         score = round(category.score, 2)
                         timestr = time.strftime("%Y%m%d-%H%M%S")
                         serialNumber = self.utils.cache['thisDevice']['deviceSerialNo']
-                        result_text = class_name + ' (' + str(score) + ') detected on ' +serialNumber+ ' at: ' +timestr
+                        # result_text = 'Detected: ' +class_name + ' (' + str(score) + ')\nDetection Count: ' +detection_count+ 'Device Serial No: ' +serialNumber+ '\nDate & time: ' +timestr
+                        result_text = 'Device Serial No: {0}\nDetected: {1} ({2: .2%} confidence ) \nDetection Count: {3}\nSeconds Count: {4: .2f}\nDate & time: {5}'.format(serialNumber, class_name, score, detection_count, seconds, timestr)
                         text_location = (_LEFT_MARGIN, (1) * _ROW_SIZE)
                         cv2.putText(fire_img, result_text, text_location, cv2.FONT_HERSHEY_PLAIN,
                                     _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
@@ -98,19 +135,16 @@ class Classify(object):
 
                         thisDevice = self.utils.cache['thisDevice']
 
-                        if self.producer:
-                            payload = {
-                                'topic': 'detection',
-                                'event': {
-                                    'type': 'SecurityAlert',
-                                    'params': {
-                                        'message': result_text,
-                                        'metadata': {
+                        event['params']['message'] = event['params']['message'] + '\n\n' +result_text
+                        event['params']['metadata'] = {
                                             'deviceId': thisDevice['id'],
                                             'location': thisDevice['location']
                                         }
-                                    }
-                                }
+
+                        if self.producer:
+                            payload = {
+                                'topic': 'detection',
+                                'event': event
                             }   
                             self.producer.publish('detection', payload)
                         detection_count = 0

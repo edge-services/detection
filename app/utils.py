@@ -46,7 +46,8 @@ class CommonUtils(Singleton):
             sock = socket.create_connection(("www.google.com", 80))
             if sock is not None:
                 sock.close
-            return True
+                # TODO: For testing offline feature
+                return True 
         except OSError:
             pass
         return False

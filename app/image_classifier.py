@@ -115,7 +115,8 @@ class ImageClassifier(object):
     # file_name = displayer.get_packed_associated_file_list()[0]
     # label_map_file = displayer.get_associated_file_buffer(file_name).decode()
     # label_list = list(filter(len, label_map_file.splitlines()))
-    label_list = ['Fire', 'Non Fire']
+    # label_list = ['Fire', 'Non Fire']
+    label_list = options.label_allow_list
     self._model_path = model_path
     self.setupInterpreter(options, label_list)
   
@@ -180,7 +181,6 @@ class ImageClassifier(object):
     # self._interpreter.set_tensor(self._input_details[0]['index'], image)
     self._interpreter.invoke()
     output_tensor = self._interpreter.get_tensor(self._output_details[0]['index'])
-    # logging.debug(output_tensor)
     output_tensor = np.squeeze(output_tensor)    
     return self._postprocess(output_tensor)
 
@@ -193,7 +193,6 @@ class ImageClassifier(object):
     Returns:
         A list of prediction result.
     """
-
     # If the model is quantized (uint8 data), then dequantize the results
     if self._is_quantized_output:
       scale, zero_point = self._output_details[0]['quantization']
@@ -202,12 +201,12 @@ class ImageClassifier(object):
     # Sort output by probability descending.
     prob_descending = sorted(
         range(len(output_tensor)), key=lambda k: output_tensor[k], reverse=True)
-
+   
     categories = [
         Category(label=self._label_list[idx], score=output_tensor[idx])
         for idx in prob_descending
     ]
-
+    
     # Filter out classification in deny list
     filtered_results = categories
     if self._options.label_deny_list is not None:
@@ -222,17 +221,16 @@ class ImageClassifier(object):
           filter(
               lambda category: category.label in self._options.label_allow_list,
               filtered_results))
-
     # Filter out classification in score threshold
     if self._options.score_threshold is not None:
       filtered_results = list(
           filter(
-              lambda category: category.score >= self._options.score_threshold,
+              lambda category: category.score >= (self._options.score_threshold),
               filtered_results))
-
+    
     # Only return maximum of max_results classification.
     if self._options.max_results > 0:
       result_count = min(len(filtered_results), self._options.max_results)
       filtered_results = filtered_results[:result_count]
-
+    
     return filtered_results

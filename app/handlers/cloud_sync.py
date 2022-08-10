@@ -150,6 +150,7 @@ class CloudSync(object):
                 self.updateAppConfig(attributes)
                 self.downloadAIModel()
                 rules = self.fetchRules()
+                self.utils.cache['rules'] = rules
                 self.logger.info('\nrules: >> %s', rules)
                 self.logger.info('<<<<<< Data in Sync now with Cloud >>>>>>')
             else:
@@ -161,8 +162,13 @@ class CloudSync(object):
     def syncWithLocal(self):
         self._thisDevice = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/thisDevice.json')
         self.utils.cache['thisDevice'] = self._thisDevice 
-        self.checkAIModel()
-        self.logger.info('<<<<<< Data in Sync now with local >>>>>>')
+        rules = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/rules.json')
+        self.utils.cache['rules'] = rules
+        aiModelExists = self.checkAIModel()
+        if aiModelExists:
+            self.logger.info('<<<<<< Data in Sync now with local >>>>>>')
+        else:
+            self.logger.info('<<<<<< AI Model not found locally.... Wait for internet connection >>>>>>')
 
     def updateAppConfig(self, attributes):
         if attributes and len(attributes) > 0:
@@ -183,6 +189,8 @@ class CloudSync(object):
     def checkAIModel(self):        
         if(os.path.exists(self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'])):
             return True
+        else:
+            return False
 
     def downloadAIModel(self):
         try:
