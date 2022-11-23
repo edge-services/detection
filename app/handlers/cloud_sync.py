@@ -183,6 +183,7 @@ class CloudSync(object):
                         self.utils.cache['CONFIG'][attrib['key']] = int(attrib['defaultValue'])
                     else:
                         self.utils.cache['CONFIG'][attrib['key']] = attrib['defaultValue']
+        self.make_data_dir()
 
     def saveLocal(self, data, fileName):
         json_object = json.dumps(data, indent = 4)       
@@ -208,6 +209,27 @@ class CloudSync(object):
         data = json.load(f)
         f.close()
         return data
+
+    def make_data_dir(self):
+        DATA_DIR = self.utils.cache['CONFIG']['DATA_DIR']
+        MODEL_DIR = os.path.join(DATA_DIR, 'model')
+        FRAMES_DIR = os.path.join(DATA_DIR, 'frames')
+        if not os.path.exists(DATA_DIR):
+            os.makedirs(DATA_DIR)
+            self.logger.info('DATA_DIR CREATED >> %s ', DATA_DIR)
+        else:
+            self.logger.info('DATA_DIR ALREADY EXISTS >> %s ', DATA_DIR)
+        if not os.path.exists(MODEL_DIR):
+            os.makedirs(MODEL_DIR)
+            self.logger.info('MODEL_DIR CREATED >> %s ', MODEL_DIR)
+        else:
+            self.logger.info('MODEL_DIR ALREADY EXISTS >> %s ', MODEL_DIR)
+        if not os.path.exists(FRAMES_DIR):
+            os.makedirs(FRAMES_DIR)
+            self.logger.info('FRAMES_DIR CREATED >> %s ', FRAMES_DIR)
+        else:
+            self.logger.info('FRAMES_DIR ALREADY EXISTS >> %s ', FRAMES_DIR)
+        
 
     def publishToFlow(self, payload):
         # self.logger.info("IN publishToFlow payload: ", payload); 

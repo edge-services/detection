@@ -77,14 +77,18 @@ def init():
     utils.cache['CONFIG']['kafka_username'] = os.environ.get("kafka_username")
     utils.cache['CONFIG']['kafka_password'] = os.environ.get("kafka_password")
     utils.cache['CONFIG']['kafka_certs_path'] = os.environ.get("kafka_certs_path")
+
+    utils.cache['CONFIG']['COS_ENDPOINT'] = os.environ.get("COS_ENDPOINT")
+    utils.cache['CONFIG']['COS_API_KEY_ID'] = os.environ.get("COS_API_KEY_ID")
+    utils.cache['CONFIG']['COS_INSTANCE_CRN'] = os.environ.get("COS_INSTANCE_CRN")
     
     global cloudAPI
     global classify
     cloudAPI = CloudSync(utils)  
     
     if utils.is_connected:        
-        cloudAPI.syncWithCloud()
-        # cloudAPI.syncWithLocal()      
+        # cloudAPI.syncWithCloud()
+        cloudAPI.syncWithLocal()      
     else:
         logger.info('Load data locally >>>')
         cloudAPI.syncWithLocal()

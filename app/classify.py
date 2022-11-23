@@ -13,6 +13,7 @@ import cv2
 from image_classifier import ImageClassifier
 from image_classifier import ImageClassifierOptions
 from handlers.producer import Producer
+from handlers.cos import COS
 from utils import CommonUtils
 
 # Visualization parameters
@@ -32,9 +33,12 @@ class Classify(object):
         load_dotenv()
         self.utils = utils
         self.producer = Producer(utils)
+        self.cos = COS(utils)
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(self.utils.cache['CONFIG']['LOGLEVEL'])
+        if self.cos.isCOSAvailable() == True:
+            print('COS IS AVAILABLE')
 
     def execute(self) -> None:
         """Continuously run inference on images acquired from the camera.  """
@@ -82,7 +86,7 @@ class Classify(object):
                         detectionCount = event['params']['publish']['count']
             
             self.logger.info('LabelToDetect: >> %s', labelToDetect)
-            self.logger.info('detection_threshold: >> %s\n', options.score_threshold)
+            self.logger.info('detection_threshold: >> %s', options.score_threshold)
             self.logger.info('publish_threshold: >> %s\n', publish_threshold)
 
             classifier = ImageClassifier(self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'], options)
@@ -134,7 +138,11 @@ class Classify(object):
                                     _FONT_SIZE, _TEXT_COLOR, _FONT_THICKNESS)
 
                         frame = serialNumber+'_frame_'+timestr+'.jpg' 
+                        frame_path = self.utils.cache['CONFIG']['DATA_DIR'] + '/frames/'+ frame
                         cv2.imwrite(os.path.join(self.utils.cache['CONFIG']['DATA_DIR'] + '/frames/' , frame), fire_img)
+                        
+                        if self.cos.isCOSAvailable() == True:
+                            result_text = self.uploadFrameToCOS(result_text, frame, frame_path)
 
                         thisDevice = self.utils.cache['thisDevice']
 
@@ -180,5 +188,14 @@ class Classify(object):
         camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.utils.cache['CONFIG']['FRAME_WIDTH'])
         camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.utils.cache['CONFIG']['FRAME_HEIGHT'])
         return camera
+
+    def uploadFrameToCOS(self, result_text, frame, frame_path):
+        uploaded_frame_url = self.cos.upload_file('demo-public-assets', frame, frame_path)
+        if uploaded_frame_url == False:
+            print('Frame Not Upoaded Successffuly')
+        else:
+            result_text = result_text + '\n\n' +uploaded_frame_url
+            os.remove(frame_path)
+        return result_text
 
    
