@@ -29,11 +29,8 @@ from dotenv import load_dotenv
 # import numpy as np
 # import cv2
 # from PIL import Image
-from image_classifier import ImageClassifier
-from image_classifier import ImageClassifierOptions
 from utils import CommonUtils
 from handlers.cloud_sync import CloudSync
-from handlers.producer import Producer
 from handlers.consumer import Consumer
 from classify import Classify
 
@@ -87,8 +84,8 @@ def init():
     cloudAPI = CloudSync(utils)  
     
     if utils.is_connected:        
-        # cloudAPI.syncWithCloud()
-        cloudAPI.syncWithLocal()      
+        cloudAPI.syncWithCloud()
+        # cloudAPI.syncWithLocal()      
     else:
         logger.info('Load data locally >>>')
         cloudAPI.syncWithLocal()
