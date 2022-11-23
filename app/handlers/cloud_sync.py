@@ -164,6 +164,9 @@ class CloudSync(object):
         self.utils.cache['thisDevice'] = self._thisDevice 
         rules = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/rules.json')
         self.utils.cache['rules'] = rules
+        attributes = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/attributes.json')
+        self.logger.info('Total Attributes Locally: >> %d', len(attributes))
+        self.updateAppConfig(attributes)
         aiModelExists = self.checkAIModel()
         if aiModelExists:
             self.logger.info('<<<<<< Data in Sync now with local >>>>>>')

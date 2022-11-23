@@ -40,6 +40,8 @@ class Classify(object):
         """Continuously run inference on images acquired from the camera.  """
         try:
             self.logger.info('\n\nIN Classify RUN method: >>>>>> ')
+            self.logger.info(self.utils.cache['CONFIG'])
+
             # Initialize the image classification model
             options = ImageClassifierOptions(
                 label_allow_list=['Fire', 'Non Fire'],
@@ -54,6 +56,7 @@ class Classify(object):
             detectionCount = 20
 
             rules = self.utils.cache['rules']
+            publish_threshold = self.utils.cache['CONFIG']['SCORE_THRESHOLD']
             if rules and len(rules) > 0:
                 condition = rules[0]['condition']
                 # self.logger.info('\n\nCondition: >> %s\n', condition)
@@ -65,9 +68,9 @@ class Classify(object):
                                 labelToDetect = child['fact']['value'] 
                             if child['fact']['path'] == '$.confidence' and child['fact']['value'] and (type(child['fact']['value']) == int or float):
                                 if child['fact']['value'] > 0:
-                                    options.score_threshold = child['fact']['value'] / 100
+                                    publish_threshold = child['fact']['value'] / 100
                                 else:
-                                    options.score_threshold = child['fact']['value']
+                                    publish_threshold = child['fact']['value']
 
                 
                 event = rules[0]['event']
@@ -79,7 +82,8 @@ class Classify(object):
                         detectionCount = event['params']['publish']['count']
             
             self.logger.info('LabelToDetect: >> %s', labelToDetect)
-            self.logger.info('Threshold: >> %s\n', options.score_threshold)
+            self.logger.info('detection_threshold: >> %s\n', options.score_threshold)
+            self.logger.info('publish_threshold: >> %s\n', publish_threshold)
 
             classifier = ImageClassifier(self.utils.cache['CONFIG']['LOCAL_MODEL_PATH'], options)
 
@@ -112,7 +116,7 @@ class Classify(object):
                 # image = cv2.imread(test_image) 
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 categories = classifier.classify(img)
-                if len(categories) and categories[0].label == labelToDetect and categories[0].score > options.score_threshold :
+                if len(categories) and categories[0].label == labelToDetect and categories[0].score > publish_threshold :
                     self.logger.info(categories)
                     # self.logger.info('%s is Detectected %d times in %d seconds: >> %d \n', labelToDetect, detection_count, seconds)
                     category = categories[0]
@@ -144,7 +148,7 @@ class Classify(object):
                             payload = {
                                 'topic': 'detection',
                                 'event': event
-                            }   
+                            }  
                             self.producer.publish('detection', payload)
                         detection_count = 0
                         start_time = time.time()

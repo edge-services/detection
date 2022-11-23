@@ -102,6 +102,21 @@ hzn exchange pattern --help
 
 ```
 
+## RUN LOCALLY (From Source)
+
+  - Clone the repository
+  - Create virtual environment and activate it
+
+```
+
+virtualenv venv -p python3.9
+source venv/bin/activate
+
+#pip freeze > requirements.txt
+pip install -r requirements.txt
+
+```
+
 ## Detection Docker (Standalone - for testing)
 
 - Create an .env file 
@@ -119,6 +134,21 @@ sudo docker run --rm -it --name detection  \
   --env-file .env \
   sinny777/detection_arm64:latest
     
+```
+
+## UNINSTALL Agent 
+
+```
+
+sudo systemctl stop horizon.service
+sudo systemctl disable horizon.service
+sudorm /etc/systemd/system/horizon.service
+sudo rm /usr/lib/systemd/system/horizon.service 
+sudo systemctl daemon-reload
+sudo systemctl reset-failed
+
+sudo rm /etc/default/horizon
+
 ```
 
 ## Refrences

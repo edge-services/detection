@@ -50,7 +50,7 @@
             "name": "CLIENT_SECRET",
             "label": "CLIENT_SECRET",
             "type": "string",
-            "defaultValue": "eac4a9da-4d3d-4e03-9265-c47f88ae35c2"
+            "defaultValue": "f296fb0d-503b-49ee-b460-1628ab580496"
         },
         {
             "name": "FLOW_URL",
@@ -93,15 +93,23 @@
             "label": "LD_LIBRARY_PATH",
             "type": "string",
             "defaultValue": "/opt/vc/lib"
-        }     
+        }
     ],
     "deployment": {
         "services": {
             "detection": {
                 "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
                 "network": "host",
-                "binds": ["/opt/vc/*:/opt/vc/*:rw", "/usr/share/*:/usr/share/*:rw", "/tmp/*:/tmp/*:rw"],
-                "devices": ["/dev/video0:/dev/video0","/dev/mem:/dev/mem", "/dev/vchiq:/dev/vchiq"],
+                "binds": [
+                    "/opt/vc/*:/opt/vc/*:rw",
+                    "/usr/share/*:/usr/share/*:rw",
+                    "/tmp/*:/tmp/*:rw"
+                ],
+                "devices": [
+                    "/dev/video0:/dev/video0",
+                    "/dev/mem:/dev/mem",
+                    "/dev/vchiq:/dev/vchiq"
+                ],
                 "privileged": true
             }
         }

@@ -37,9 +37,10 @@ class Producer(object):
     
     def publish(self, topic, payload):
         try:
+            # self.logger.info(payload) 
             jd = json.dumps(payload).encode('utf-8')
             self.producer.send(topic, jd)
             self.producer.flush()
+            self.logger.info('\n\n <<<<<<<<<<< Payload Published Successfully >>>>>>>>>>>>>> \n\n')
         except Exception as err:
             self.logger.info("Error in publishing: >> ", err)
-

@@ -1,5 +1,3 @@
-
-
 import os
 import json
 import logging
@@ -63,4 +61,3 @@ class Consumer(threading.Thread):
             if self.consumer:
                 self.consumer.close()
             self.logger.info('Consumer Ended....')
-

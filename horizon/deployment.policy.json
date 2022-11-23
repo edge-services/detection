@@ -8,12 +8,11 @@
     "serviceVersions": [
       {
         "version": "$SERVICE_VERSION",
-        "priority":{}
+        "priority": {}
       }
     ]
   },
-  "properties": [
-  ],
+  "properties": [],
   "constraints": [
     "hasCamera == true",
     "detection == true"
@@ -33,53 +32,53 @@
           "value": "/tmp"
         },
         {
-            "name": "TENANT_ID",
-            "value": "ibm"
+          "name": "TENANT_ID",
+          "value": "ibm"
         },
         {
-            "name": "auth_svc_url",
-            "value": "https://smartthings-auth.mybluemix.net"
+          "name": "auth_svc_url",
+          "value": "https://smartthings-auth.mybluemix.net"
         },
         {
-            "name": "iot_svc_url",
-            "value": "https://smartthings-iot.mybluemix.net"
+          "name": "iot_svc_url",
+          "value": "https://smartthings-iot.mybluemix.net"
         },
         {
-            "name": "CLIENT_ID",
-            "value": "EdgeApplication"
+          "name": "CLIENT_ID",
+          "value": "EdgeApplication"
         },
         {
-            "name": "CLIENT_SECRET",
-            "value": "eac4a9da-4d3d-4e03-9265-c47f88ae35c2"
+          "name": "CLIENT_SECRET",
+          "value": "f296fb0d-503b-49ee-b460-1628ab580496"
         },
         {
-            "name": "FLOW_URL",
-            "value": "http://localhost:1880"
+          "name": "FLOW_URL",
+          "value": "http://localhost:1880"
         },
         {
-            "name": "kafka_brokers",
-            "value": "pkc-lzvrd.us-west4.gcp.confluent.cloud:9092"
+          "name": "kafka_brokers",
+          "value": "pkc-lzvrd.us-west4.gcp.confluent.cloud:9092"
         },
         {
-            "name": "kafka_username",
-            "value": "NFYTLPG6OFCRX5TO"
+          "name": "kafka_username",
+          "value": "NFYTLPG6OFCRX5TO"
         },
         {
-            "name": "kafka_password",
-            "value": "LoPzCu9OpdvNawg1wnusvEu0WlEOdeteqSN1pjv6iFfoSSezDcPNINsf8lgE7Cow"
+          "name": "kafka_password",
+          "value": "LoPzCu9OpdvNawg1wnusvEu0WlEOdeteqSN1pjv6iFfoSSezDcPNINsf8lgE7Cow"
         },
         {
-            "name": "kafka_certs_path",
-            "value": "./certs/Certificates.pem"
+          "name": "kafka_certs_path",
+          "value": "./certs/Certificates.pem"
         },
         {
-            "name": "USE_RADIO",
-            "value": "false"
+          "name": "USE_RADIO",
+          "value": "false"
         },
         {
-            "name": "LD_LIBRARY_PATH",
-            "value": "/opt/vc/lib"
-        }     
+          "name": "LD_LIBRARY_PATH",
+          "value": "/opt/vc/lib"
+        }
       ]
     }
   ]
