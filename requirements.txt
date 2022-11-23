@@ -7,18 +7,16 @@ ibm-cos-sdk==2.12.0
 ibm-cos-sdk-core==2.12.0
 ibm-cos-sdk-s3transfer==2.12.0
 idna==3.3
+jmespath==0.10.0
 kafka-python==2.0.2
 numpy==1.20.0
 opencv-python==4.5.3.56
-# pandas==1.4.1
-# Pillow==9.0.1 
 pybind11==2.9.2
 python-dateutil==2.8.2
 python-dotenv==0.20.0
 pytz==2022.1
 requests==2.27.1
 six==1.16.0
-# tflite-runtime==2.5.0
+# tflite-runtime==2.5.0.post1
 tflite-support==0.3.1
 urllib3==1.26.9
-
