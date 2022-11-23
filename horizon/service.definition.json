@@ -83,16 +83,28 @@
             "defaultValue": "./certs/Certificates.pem"
         },
         {
-            "name": "USE_RADIO",
-            "label": "Use of Radio module",
-            "type": "string",
-            "defaultValue": "false"
-        },
-        {
             "name": "LD_LIBRARY_PATH",
             "label": "LD_LIBRARY_PATH",
             "type": "string",
             "defaultValue": "/opt/vc/lib"
+        },
+        {
+            "name": "COS_ENDPOINT",
+            "label": "Cloud Object Storage ENDPOINT",
+            "type": "string",
+            "defaultValue": "https://s3.tok.ap.cloud-object-storage.appdomain.cloud"
+        },
+        {
+            "name": "COS_API_KEY_ID",
+            "label": "COS_API_KEY_ID",
+            "type": "string",
+            "defaultValue": "816HFeHbtI_WiIlkFTaAO61vld7bM7nDB08U7MpaVHNm"
+        },
+        {
+            "name": "COS_INSTANCE_CRN",
+            "label": "COS_INSTANCE_CRN",
+            "type": "string",
+            "defaultValue": "crn:v1:bluemix:public:cloud-object-storage:global:a/2c303e22de2b34062121bab41b176b1b:9265be8b-fd44-4697-a440-398e0f352106::"
         }
     ],
     "deployment": {

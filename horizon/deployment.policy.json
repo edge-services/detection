@@ -72,8 +72,16 @@
           "value": "./certs/Certificates.pem"
         },
         {
-          "name": "USE_RADIO",
-          "value": "false"
+          "name": "COS_ENDPOINT",
+          "value": "https://s3.tok.ap.cloud-object-storage.appdomain.cloud"
+        },
+        {
+          "name": "COS_API_KEY_ID",
+          "value": "816HFeHbtI_WiIlkFTaAO61vld7bM7nDB08U7MpaVHNm"
+        },
+        {
+          "name": "COS_INSTANCE_CRN",
+          "value": "crn:v1:bluemix:public:cloud-object-storage:global:a/2c303e22de2b34062121bab41b176b1b:9265be8b-fd44-4697-a440-398e0f352106::"
         },
         {
           "name": "LD_LIBRARY_PATH",

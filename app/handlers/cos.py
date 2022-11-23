@@ -40,7 +40,6 @@ class COS(object):
                     self.logger.error("Error in Initializing Producer: >> ", err)
 
     def isCOSAvailable(self):
-        self.logger.info('IN isCOSAvailable, COS_API_KEY_ID: %s', self.utils.cache['CONFIG']['COS_API_KEY_ID'])
         self.logger.info('IN isCOSAvailable: %s', self.COSAvailable)
         return self.COSAvailable
 
