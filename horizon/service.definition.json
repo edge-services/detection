@@ -105,6 +105,12 @@
             "label": "COS_INSTANCE_CRN",
             "type": "string",
             "defaultValue": "crn:v1:bluemix:public:cloud-object-storage:global:a/2c303e22de2b34062121bab41b176b1b:9265be8b-fd44-4697-a440-398e0f352106::"
+        },
+        {
+            "name": "COS_BUCKET",
+            "label": "COS_BUCKET",
+            "type": "string",
+            "defaultValue": "demo-public-assets"
         }
     ],
     "deployment": {

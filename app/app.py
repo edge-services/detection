@@ -78,6 +78,7 @@ def init():
     utils.cache['CONFIG']['COS_ENDPOINT'] = os.environ.get("COS_ENDPOINT")
     utils.cache['CONFIG']['COS_API_KEY_ID'] = os.environ.get("COS_API_KEY_ID")
     utils.cache['CONFIG']['COS_INSTANCE_CRN'] = os.environ.get("COS_INSTANCE_CRN")
+    utils.cache['CONFIG']['COS_BUCKET'] = os.environ.get("COS_BUCKET")
     
     global cloudAPI
     global classify

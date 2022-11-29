@@ -190,7 +190,7 @@ class Classify(object):
         return camera
 
     def uploadFrameToCOS(self, result_text, frame, frame_path):
-        uploaded_frame_url = self.cos.upload_file('demo-public-assets', frame, frame_path)
+        uploaded_frame_url = self.cos.upload_file(self.utils.cache['CONFIG']['COS_BUCKET'], frame, frame_path)
         if uploaded_frame_url == False:
             print('Frame Not Upoaded Successffuly')
         else:
