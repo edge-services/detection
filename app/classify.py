@@ -58,6 +58,7 @@ class Classify(object):
             publishType = 'x-in-y'
             timePeriod = 10
             detectionCount = 20
+            event = None
 
             rules = self.utils.cache['rules']
             publish_threshold = self.utils.cache['CONFIG']['SCORE_THRESHOLD']
@@ -78,7 +79,7 @@ class Classify(object):
 
                 
                 event = rules[0]['event']
-                # self.logger.info('Event: >> %s\n', event)
+                self.logger.info('Event: >> %s\n', event)
                 if event and event['params'] and event['params']['publish']:
                     publishType = event['params']['publish']['when']
                     if publishType == 'x-in-y':
@@ -145,12 +146,14 @@ class Classify(object):
                             result_text = self.uploadFrameToCOS(result_text, frame, frame_path)
 
                         thisDevice = self.utils.cache['thisDevice']
-
+                        self.logger.info('EVENT: >>> %s', event)
                         event['params']['message'] = event['params']['message'] + '\n\n' +result_text
                         event['params']['metadata'] = {
-                                            'deviceId': thisDevice['id'],
-                                            'location': thisDevice['location']
+                                            'deviceId': thisDevice['id']                                            
                                         }
+                        
+                        if 'location' in thisDevice:
+                            event['params']['metadata']['location'] = thisDevice['location']
 
                         if self.producer:
                             payload = {
@@ -174,8 +177,8 @@ class Classify(object):
             pass
         # except KeyboardInterrupt as ki:
         #     self.logger.info('KeyboardInterrupt in run detection: >> ', ki)
-        # except Exception as err:
-        #     self.logger.info('Exception in run detection: >> ', err)
+        except Exception as err:
+            self.logger.error('Exception in run detection: >> %s', err)
         finally:
             self.logger.info('In Finally of Classify.run().....')
             if camera is not None:
@@ -194,6 +197,7 @@ class Classify(object):
         if uploaded_frame_url == False:
             print('Frame Not Upoaded Successffuly')
         else:
+            print('Frame Upoaded Successffuly')
             result_text = result_text + '\n\n' +uploaded_frame_url
             os.remove(frame_path)
         return result_text

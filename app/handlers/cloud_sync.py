@@ -35,7 +35,8 @@ class CloudSync(object):
         CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
         PARAMS = {'clientId': CLIENT_ID, 'secret': CLIENT_SECRET}
         r = requests.post(url = endpoint, json = PARAMS)
-        data = r.json()        
+        data = r.json()  
+        # self.logger.info('IN fetchToken >> %s', data)
         self._tokens = {'token': data['token'], 'refreshToken': data['refreshToken']}
         self.saveLocal(self._tokens, 'tokens.json')
         return self._tokens
@@ -157,7 +158,7 @@ class CloudSync(object):
                 self.logger.info('Internet Not Available')
                 self.syncWithLocal()
         except Exception as err:
-            self.logger.error('Exception in syncWithCloud: >> ', err)
+            self.logger.error('Exception in syncWithCloud: >> %s', err)
 
     def syncWithLocal(self):
         self._thisDevice = self.loadData(self.utils.cache['CONFIG']['DATA_DIR'] + '/thisDevice.json')
