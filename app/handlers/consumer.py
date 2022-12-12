@@ -35,7 +35,7 @@ class Consumer(threading.Thread):
                                 #   auto_commit_interval_ms=1000,
                                 value_deserializer=lambda m: json.loads(m.decode('utf-8')))
         except Exception as err:
-            self.logger.error("Error in Initializing Consumer: >> ", err)
+            self.logger.error("Error in Initializing Consumer: >> %s", err)
 
     def stop(self):
         self.stop_event.set()

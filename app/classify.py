@@ -155,12 +155,17 @@ class Classify(object):
                         if 'location' in thisDevice:
                             event['params']['metadata']['location'] = thisDevice['location']
 
+
+                        topic = 'detection'
+                        if 'topic' in event['params']:
+                            topic = event['params']['topic']
+
                         if self.producer:
                             payload = {
-                                'topic': 'detection',
+                                'topic': topic,
                                 'event': event
                             }  
-                            self.producer.publish('detection', payload)
+                            self.producer.publish(topic, payload)
                         detection_count = 0
                         start_time = time.time()
                     self.logger.info(categories[0])

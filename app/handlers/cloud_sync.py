@@ -131,6 +131,7 @@ class CloudSync(object):
                     }
                 
             params_json = json.dumps(params)
+            print(params)
             r = requests.get(url = endpoint % params_json, headers=headers, params=params)
             rules = r.json()
             self.saveLocal(rules, 'rules.json') 

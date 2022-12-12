@@ -88,6 +88,7 @@ hzn register --policy detection.policy.json
 ```
 
 hzn eventlog list -f
+sudo tail /var/log/syslog -f
 hzn service log -f detection
 
 hzn unregister -f
