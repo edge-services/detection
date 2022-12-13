@@ -111,16 +111,18 @@ class Classify(object):
                     self.getCamera()
                     continue
 
-                counter += 1
-                end_time = time.time()
-                seconds = end_time - start_time
-                fps = _FPS_AVERAGE_FRAME_COUNT / seconds
-
                 # image = cv2.flip(image, 1)
                 # test_image = 'data/Pune-fire-1.jpeg'
                 # image = cv2.imread(test_image) 
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 categories = classifier.classify(img)
+
+                counter += 1
+                end_time = time.time()
+                seconds = end_time - start_time
+                fps = _FPS_AVERAGE_FRAME_COUNT / seconds
+
+
                 if len(categories) and categories[0].label == labelToDetect and categories[0].score > publish_threshold :
                     self.logger.info(categories)
                     # self.logger.info('%s is Detectected %d times in %d seconds: >> %d \n', labelToDetect, detection_count, seconds)
@@ -145,6 +147,8 @@ class Classify(object):
                         if self.cos.isCOSAvailable() == True:
                             result_text = self.uploadFrameToCOS(result_text, frame, frame_path)
 
+                        detection_count = 0
+                        start_time = time.time()
                         thisDevice = self.utils.cache['thisDevice']
                         self.logger.info('EVENT: >>> %s', event)
                         event['params']['message'] = event['params']['message'] + '\n\n' +result_text
@@ -166,8 +170,7 @@ class Classify(object):
                                 'event': event
                             }  
                             self.producer.publish(topic, payload)
-                        detection_count = 0
-                        start_time = time.time()
+                        
                     self.logger.info(categories[0])
 
                 # Stop the program if the ESC key is pressed.
