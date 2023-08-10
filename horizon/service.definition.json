@@ -32,13 +32,13 @@
             "name": "auth_svc_url",
             "label": "auth_svc_url",
             "type": "string",
-            "defaultValue": "https://smartthings-auth.mybluemix.net"
+            "defaultValue": "https://smartthings-accounts.15vte5mzdbk3.us-east.codeengine.appdomain.cloud"
         },
         {
             "name": "iot_svc_url",
             "label": "iot_svc_url",
             "type": "string",
-            "defaultValue": "https://smartthings-iot.mybluemix.net"
+            "defaultValue": "https://smartthings-iot.15vte5mzdbk3.us-east.codeengine.appdomain.cloud"
         },
         {
             "name": "CLIENT_ID",

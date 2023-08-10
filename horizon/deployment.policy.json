@@ -37,11 +37,11 @@
         },
         {
           "name": "auth_svc_url",
-          "value": "https://smartthings-auth.mybluemix.net"
+          "value": "https://smartthings-accounts.15vte5mzdbk3.us-east.codeengine.appdomain.cloud"
         },
         {
           "name": "iot_svc_url",
-          "value": "https://smartthings-iot.mybluemix.net"
+          "value": "https://smartthings-iot.15vte5mzdbk3.us-east.codeengine.appdomain.cloud"
         },
         {
           "name": "CLIENT_ID",
